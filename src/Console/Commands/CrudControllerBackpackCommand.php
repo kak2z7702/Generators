@@ -129,7 +129,7 @@ class CrudControllerBackpackCommand extends GeneratorCommand
         $fields = Arr::except($attributes, ['id', 'created_at', 'updated_at', 'deleted_at']);
         $fields = collect($fields)
             ->map(function ($field) {
-                return "CRUD::column('$field');";
+                return "CRUD::field('$field');";
             })
             ->toArray();
 
