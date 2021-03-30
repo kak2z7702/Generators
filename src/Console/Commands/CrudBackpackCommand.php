@@ -53,7 +53,7 @@ class CrudBackpackCommand extends Command
 
         // if the application uses cached routes, we should rebuild the cache so the previous added route will
         // be acessible without manually clearing the route cache.
-        if(app()->routesAreCached()) {
+        if (app()->routesAreCached()) {
             $this->call('route:cache');
         }
     }
