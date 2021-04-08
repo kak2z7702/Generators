@@ -12,6 +12,12 @@
     "license": "proprietary",
     "authors": [
         {
+            "name": "Cristian Tabacitu",
+            "email": "tabacitu@backpackforlaravel.com",
+            "homepage": "https://backpackforlaravel.com",
+            "role": "Lead Developer & Maintainer"
+        },
+        {
             "name": "Cristian Tone",
             "email": "cristitone@outlook.com",
             "homepage": "http://updivision.com",
