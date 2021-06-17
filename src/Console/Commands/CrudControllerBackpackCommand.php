@@ -84,7 +84,7 @@ class CrudControllerBackpackCommand extends GeneratorCommand
     {
         $nameTitle = Str::of($name)->afterLast('\\');
         $nameKebab = $nameTitle->kebab();
-        $nameSingular = $nameKebab->replace('-', ' ')->title();
+        $nameSingular = $nameKebab->replace('-', ' ');
         $namePlural = $nameSingular->plural();
 
         $stub = str_replace('DummyClass', $nameTitle, $stub);
