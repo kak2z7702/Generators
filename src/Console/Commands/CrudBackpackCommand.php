@@ -28,27 +28,28 @@ class CrudBackpackCommand extends Command
      */
     public function handle()
     {
-        $name = ucfirst($this->argument('name'));
-        $lowerName = strtolower($this->argument('name'));
-        $pluralName = Str::plural($name);
+        $name = Str::of($this->argument('name'));
+        $nameTitle = $name->camel()->ucfirst();
+        $nameKebab = $nameTitle->kebab();
+        $namePlural = $nameKebab->plural()->replace('-', ' ')->title();
 
         // Create the CRUD Controller and show output
-        $this->call('backpack:crud-controller', ['name' => $name]);
+        $this->call('backpack:crud-controller', ['name' => $nameTitle]);
 
         // Create the CRUD Model and show output
-        $this->call('backpack:crud-model', ['name' => $name]);
+        $this->call('backpack:crud-model', ['name' => $nameTitle]);
 
         // Create the CRUD Request and show output
-        $this->call('backpack:crud-request', ['name' => $name]);
+        $this->call('backpack:crud-request', ['name' => $nameTitle]);
 
         // Create the CRUD route
         $this->call('backpack:add-custom-route', [
-            'code' => "Route::crud('$lowerName', '{$name}CrudController');",
+            'code' => "Route::crud('$nameKebab', '{$nameTitle}CrudController');",
         ]);
 
         // Create the sidebar item
         $this->call('backpack:add-sidebar-content', [
-            'code' => "<li class='nav-item'><a class='nav-link' href='{{ backpack_url('$lowerName') }}'><i class='nav-icon la la-question'></i> $pluralName</a></li>",
+            'code' => "<li class='nav-item'><a class='nav-link' href='{{ backpack_url('$nameKebab') }}'><i class='nav-icon la la-question'></i> $namePlural</a></li>",
         ]);
 
         // if the application uses cached routes, we should rebuild the cache so the previous added route will
