@@ -18,7 +18,7 @@ Quickly generate Backpack templated Models, Requests, Views and Config files for
 Via Composer
 
 ``` bash
-composer require backpack/generators --dev
+composer require --dev backpack/generators 
 ```
 
 ## Usage
@@ -37,8 +37,9 @@ php artisan backpack:build
 ``` bash
 php artisan backpack:crud {Entity_name}
 
-# this will create a Model if there isn't one, or add
-# our CrudTrait to the model if it already exists
+# Use singular, either PascalCase, snake_case or kebab-case.
+# This will create a Model if there isn't one, or add
+# our CrudTrait to the model if it already exists.
 ```
 
 - Generate a new Backpack\CRUD file:
