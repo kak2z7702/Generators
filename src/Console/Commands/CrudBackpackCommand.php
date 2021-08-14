@@ -28,10 +28,10 @@ class CrudBackpackCommand extends Command
      */
     public function handle()
     {
-        $name = Str::of($this->argument('name'));
-        $nameTitle = $name->camel()->ucfirst();
-        $nameKebab = $nameTitle->kebab();
-        $namePlural = $nameKebab->plural()->replace('-', ' ')->title();
+        $name = (string) $this->argument('name');
+        $nameTitle = ucfirst(Str::camel($name));
+        $nameKebab = Str::kebab($nameTitle);
+        $namePlural = ucfirst(str_replace('-', ' ', Str::plural($nameKebab)));
 
         // Create the CRUD Controller and show output
         $this->call('backpack:crud-controller', ['name' => $nameTitle]);
