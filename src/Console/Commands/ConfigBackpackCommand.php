@@ -82,8 +82,7 @@ class ConfigBackpackCommand extends GeneratorCommand
     /**
      * Determine if the class already exists.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return bool
      */
     protected function alreadyExists($name)
@@ -94,8 +93,7 @@ class ConfigBackpackCommand extends GeneratorCommand
     /**
      * Get the destination class path.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     protected function getPath($name)
@@ -106,8 +104,7 @@ class ConfigBackpackCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     protected function buildClass($name)

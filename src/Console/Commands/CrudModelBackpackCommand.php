@@ -147,9 +147,8 @@ class CrudModelBackpackCommand extends GeneratorCommand
     /**
      * Replace the table name for the given stub.
      *
-     * @param string $stub
-     * @param string $name
-     *
+     * @param  string  $stub
+     * @param  string  $name
      * @return string
      */
     protected function replaceTable(&$stub, $name)
@@ -166,8 +165,7 @@ class CrudModelBackpackCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     protected function buildClass($name)

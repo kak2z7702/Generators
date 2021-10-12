@@ -33,7 +33,6 @@ class CrudBackpackCommand extends Command
         $nameKebab = Str::kebab($nameTitle);
         $namePlural = ucfirst(str_replace('-', ' ', Str::plural($nameKebab)));
 
-
         // Create the CRUD Model and show output
         $this->call('backpack:crud-model', ['name' => $nameTitle]);
 

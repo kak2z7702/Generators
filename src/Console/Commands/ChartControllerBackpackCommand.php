@@ -38,8 +38,7 @@ class ChartControllerBackpackCommand extends GeneratorCommand
     /**
      * Get the destination class path.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     protected function getPath($name)
@@ -62,8 +61,7 @@ class ChartControllerBackpackCommand extends GeneratorCommand
     /**
      * Get the default namespace for the class.
      *
-     * @param string $rootNamespace
-     *
+     * @param  string  $rootNamespace
      * @return string
      */
     protected function getDefaultNamespace($rootNamespace)
@@ -74,9 +72,8 @@ class ChartControllerBackpackCommand extends GeneratorCommand
     /**
      * Replace the table name for the given stub.
      *
-     * @param string $stub
-     * @param string $name
-     *
+     * @param  string  $stub
+     * @param  string  $name
      * @return string
      */
     protected function replaceRouteStrings(&$stub)
@@ -89,8 +86,7 @@ class ChartControllerBackpackCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     protected function buildClass($name)
