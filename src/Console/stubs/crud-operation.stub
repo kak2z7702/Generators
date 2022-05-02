@@ -18,7 +18,7 @@ trait DummyClassOperation
         Route::get($segment.'/dummy_class', [
             'as'        => $routeName.'.dummy_class',
             'uses'      => $controller.'@dummy_class',
-            'operation' => 'dummy_class',
+            'operation' => 'DummyClass',
         ]);
     }
 
@@ -27,9 +27,9 @@ trait DummyClassOperation
      */
     protected function setupDummyClassDefaults()
     {
-        $this->crud->allowAccess('dummy_class');
+        $this->crud->allowAccess('DummyClass');
 
-        $this->crud->operation('dummy_class', function () {
+        $this->crud->operation('DummyClass', function () {
             $this->crud->loadDefaultOperationSettingsFromConfig();
         });
 
@@ -46,7 +46,7 @@ trait DummyClassOperation
      */
     public function dummy_class()
     {
-        $this->crud->hasAccessOrFail('dummy_class');
+        $this->crud->hasAccessOrFail('DummyClass');
 
         // prepare the fields you need to show
         $this->data['crud'] = $this->crud;
