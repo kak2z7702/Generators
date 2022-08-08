@@ -2,11 +2,13 @@
 
 namespace Backpack\Generators\Console\Commands;
 
-use Illuminate\Console\Command;
+use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 
-class CrudBackpackCommand extends Command
+class CrudBackpackCommand extends GeneratorCommand
 {
+    use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
+
     /**
      * The name and signature of the console command.
      *
@@ -28,10 +30,19 @@ class CrudBackpackCommand extends Command
      */
     public function handle()
     {
-        $name = (string) $this->argument('name');
+        $name = $this->getNameInput();
         $nameTitle = ucfirst(Str::camel($name));
         $nameKebab = Str::kebab($nameTitle);
         $namePlural = ucfirst(str_replace('-', ' ', Str::plural($nameKebab)));
+
+        // Validate if the name is reserved
+        if ($this->isReservedName($nameTitle)) {
+            $this->errorBlock("The name '$nameTitle' is reserved by PHP.");
+
+            return false;
+        }
+
+        $this->infoBlock("Creating CRUD for the <fg=blue>$nameTitle</> model:");
 
         // Create the CRUD Model and show output
         $this->call('backpack:crud-model', ['name' => $nameTitle]);
@@ -49,7 +60,7 @@ class CrudBackpackCommand extends Command
 
         // Create the sidebar item
         $this->call('backpack:add-sidebar-content', [
-            'code' => "<li class='nav-item'><a class='nav-link' href='{{ backpack_url('$nameKebab') }}'><i class='nav-icon la la-question'></i> $namePlural</a></li>",
+            'code' => "<li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ backpack_url('$nameKebab') }}\"><i class=\"nav-icon la la-question\"></i> $namePlural</a></li>",
         ]);
 
         // if the application uses cached routes, we should rebuild the cache so the previous added route will
@@ -57,5 +68,22 @@ class CrudBackpackCommand extends Command
         if (app()->routesAreCached()) {
             $this->call('route:cache');
         }
+
+        $url = Str::of(config('app.url'))->finish('/')->append('admin/')->append($nameKebab);
+
+        $this->newLine();
+        $this->line("  Successfully created a CRUD for the <fg=blue>$nameTitle</> model.");
+        $this->note("Go to <fg=blue>$url</> to see it in action.");
+        $this->newLine();
+    }
+
+    /**
+     * Get the stub file for the generator.
+     *
+     * @return string
+     */
+    protected function getStub()
+    {
+        return false;
     }
 }

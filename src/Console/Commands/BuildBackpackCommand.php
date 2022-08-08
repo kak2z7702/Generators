@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 
 class BuildBackpackCommand extends Command
 {
+    use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
+
     /**
      * The name and signature of the console command.
      *
@@ -30,22 +32,20 @@ class BuildBackpackCommand extends Command
     public function handle()
     {
         // make a list of all models
-        $models = $this->getModels(base_path().'/app');
+        $models = $this->getModels(base_path('app'));
 
         if (! count($models)) {
-            $this->error('No models found.');
+            $this->errorBlock('No models found.');
 
-            return false;
+            return;
         }
 
         foreach ($models as $key => $model) {
-            $this->info("--- $model ---");
-            // Create the CrudController & Request
-            // Attach CrudTrait to Model
-            // Add sidebar item
-            // Add routes
             $this->call('backpack:crud', ['name' => $model]);
+            $this->line('  <fg=gray>----------</>');
         }
+
+        $this->deleteLines();
     }
 
     private function getModels($path)
