@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 
 class CrudControllerBackpackCommand extends GeneratorCommand
 {
+    use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
+
     /**
      * The console command name.
      *
@@ -35,6 +37,39 @@ class CrudControllerBackpackCommand extends GeneratorCommand
      * @var string
      */
     protected $type = 'Controller';
+
+    /**
+     * Execute the console command.
+     *
+     * @return bool|null
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function handle()
+    {
+        $name = $this->qualifyClass($this->getNameInput());
+        $path = $this->getPath($name);
+
+        $this->progressBlock("Creating ${name}CrudController");
+
+        // Next, We will check to see if the class already exists. If it does, we don't want
+        // to create the class and overwrite the user's code. So, we will bail out so the
+        // code is untouched. Otherwise, we will continue generating this class' files.
+        if ((! $this->hasOption('force') || ! $this->option('force')) && $this->alreadyExists($this->getNameInput())) {
+            $this->closeProgressBlock('Already existed', 'yellow');
+
+            return false;
+        }
+
+        // Next, we will generate the path to the location where this class' file should get
+        // written. Then, we will build the class and make the proper replacements on the
+        // stub files so that it gets the correctly formatted namespace and class name.
+        $this->makeDirectory($path);
+
+        $this->files->put($path, $this->sortImports($this->buildClass($name)));
+
+        $this->closeProgressBlock();
+    }
 
     /**
      * Get the destination class path.
@@ -95,7 +130,7 @@ class CrudControllerBackpackCommand extends GeneratorCommand
     protected function getAttributes($model)
     {
         $attributes = [];
-        $model = new $model;
+        $model = new $model();
 
         // if fillable was defined, use that as the attributes
         if (count($model->getFillable())) {
