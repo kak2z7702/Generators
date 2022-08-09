@@ -77,7 +77,7 @@ class CrudModelBackpackCommand extends GeneratorCommand
         }
 
         // Model exists
-        $this->closeProgressBlock('Not needed', 'yellow');
+        $this->closeProgressBlock('Already existed', 'yellow');
 
         // If it was found on both namespaces, we'll ask user to pick one of them
         if ($existsOnApp && $existsOnModels) {
@@ -105,7 +105,7 @@ class CrudModelBackpackCommand extends GeneratorCommand
             // check if it already uses CrudTrait
             // if it does, do nothing
             if (Str::contains($file, $this->crudTrait)) {
-                $this->closeProgressBlock('NOT NEEDED', 'yellow');
+                $this->closeProgressBlock('Already existed', 'yellow');
 
                 return;
             }

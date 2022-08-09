@@ -54,7 +54,7 @@ class CrudRequestBackpackCommand extends GeneratorCommand
         // to create the class and overwrite the user's code. So, we will bail out so the
         // code is untouched. Otherwise, we will continue generating this class' files.
         if ((! $this->hasOption('force') || ! $this->option('force')) && $this->alreadyExists($this->getNameInput())) {
-            $this->closeProgressBlock('Not needed', 'yellow');
+            $this->closeProgressBlock('Already existed', 'yellow');
 
             return false;
         }

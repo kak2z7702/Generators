@@ -56,7 +56,7 @@ class CrudControllerBackpackCommand extends GeneratorCommand
         // to create the class and overwrite the user's code. So, we will bail out so the
         // code is untouched. Otherwise, we will continue generating this class' files.
         if ((! $this->hasOption('force') || ! $this->option('force')) && $this->alreadyExists($this->getNameInput())) {
-            $this->closeProgressBlock('Not needed', 'yellow');
+            $this->closeProgressBlock('Already existed', 'yellow');
 
             return false;
         }
@@ -130,7 +130,7 @@ class CrudControllerBackpackCommand extends GeneratorCommand
     protected function getAttributes($model)
     {
         $attributes = [];
-        $model = new $model;
+        $model = new $model();
 
         // if fillable was defined, use that as the attributes
         if (count($model->getFillable())) {
