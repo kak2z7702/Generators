@@ -72,8 +72,7 @@ class CrudBackpackCommand extends GeneratorCommand
         $url = Str::of(config('app.url'))->finish('/')->append('admin/')->append($nameKebab);
 
         $this->newLine();
-        $this->line("  Successfully created a CRUD for the <fg=blue>$nameTitle</> model.");
-        $this->note("Go to <fg=blue>$url</> to see it in action.");
+        $this->line("  Done! Go to <fg=blue>$url</> to see the CRUD in action.");
         $this->newLine();
     }
 
