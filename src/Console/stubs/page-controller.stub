@@ -1,0 +1,26 @@
+<?php
+
+namespace DummyNamespace;
+
+use Backpack\CRUD\app\Http\Controllers\BaseController;
+
+/**
+ * Class DummyClassController
+ * @package App\Http\Controllers\Admin
+ * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
+ */
+class DummyClassController extends BaseController
+{
+    public function index()
+    {
+        return view('dummy.path', [
+            'title' => 'DummyName',
+            'breadcrumbs' => [
+                trans('backpack::crud.admin') => backpack_url('dashboard'),
+                'DummyName' => false,
+            ],
+            'page' => 'resources/views/dummy/path.blade.php',
+            'controller' => 'app/Http/Controllers/Admin/DummyNameController.php',
+        ]);
+    }
+}
