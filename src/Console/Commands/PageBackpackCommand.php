@@ -118,8 +118,7 @@ class PageBackpackCommand extends GeneratorCommand
     /**
      * Determine if the class already exists.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return bool
      */
     protected function alreadyExists($name)
@@ -130,8 +129,7 @@ class PageBackpackCommand extends GeneratorCommand
     /**
      * Get the destination class path.
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     protected function getPath($name)
