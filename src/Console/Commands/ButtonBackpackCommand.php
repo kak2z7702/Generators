@@ -97,7 +97,7 @@ class ButtonBackpackCommand extends GeneratorCommand
      * @return string
      */
     protected function getPath($name)
-    {        
+    {
         return $this->laravel['path'].'/../resources/views/vendor/backpack/crud/buttons/'.str_replace('\\', '/', $name).'.blade.php';
     }
 
@@ -111,6 +111,7 @@ class ButtonBackpackCommand extends GeneratorCommand
     {
         $stub = $this->files->get($this->getStub());
         $stub = str_replace('dummy', $name, $stub);
+        
         return $stub;
     }
 
