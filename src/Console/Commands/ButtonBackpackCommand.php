@@ -25,7 +25,7 @@ class ButtonBackpackCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $description = 'Generate a backpack templated button';
+    protected $description = 'Generate a Backpack button';
 
     /**
      * The type of class being generated.
