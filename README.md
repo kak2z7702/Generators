@@ -73,6 +73,12 @@ php artisan backpack:view {Entity_name}
 php artisan backpack:config {Entity_name}
 ```
 
+- Generate a button
+
+``` bash
+php artisan backpack:button {Entity_name}
+```
+
 ## Change log
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
