@@ -2,14 +2,14 @@
 
 namespace DummyNamespace;
 
-use Backpack\CRUD\app\Http\Controllers\BaseController;
+use Illuminate\Routing\Controller;
 
 /**
  * Class DummyClassController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class DummyClassController extends BaseController
+class DummyClassController extends Controller
 {
     public function index()
     {
