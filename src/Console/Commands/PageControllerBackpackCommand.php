@@ -132,10 +132,11 @@ class PageControllerBackpackCommand extends GeneratorCommand
      */
     protected function replacePathStrings(&$stub)
     {
+        $viewName = $this->getNameInput()->snake('_');
         $pathDot = Str::of($this->option('view-path'))
             ->replace('/', '.')
             ->replace('\\', '.')
-            ->append('.'.$this->getNameInput()->lcfirst())
+            ->append('.'.$viewName)
             ->trim('.');
         $pathSlash = $pathDot->replace('.', '/');
 
@@ -158,6 +159,7 @@ class PageControllerBackpackCommand extends GeneratorCommand
 
         $stub = str_replace('DummyName', $name, $stub);
         $stub = str_replace('dummyName', $name->lcfirst(), $stub);
+        $stub = str_replace('Dummy Name', $name->kebab()->replace('-', ' ')->title(), $stub);
 
         return $this;
     }

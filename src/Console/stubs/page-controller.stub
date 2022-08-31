@@ -14,7 +14,7 @@ class DummyClassController extends Controller
     public function index()
     {
         return view('dummy.path', [
-            'title' => 'DummyName',
+            'title' => 'Dummy Name',
             'breadcrumbs' => [
                 trans('backpack::crud.admin') => backpack_url('dashboard'),
                 'DummyName' => false,
