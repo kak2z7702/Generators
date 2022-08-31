@@ -48,24 +48,26 @@ class PageBackpackCommand extends GeneratorCommand
      */
     public function handle()
     {
-        $filePath = Str::of($this->getNameInput())
+        $input = Str::of($this->getNameInput())
             ->replace('\\', '/')
             ->replace('.', '/')
-            ->trim('/')
             ->start('/')
-            ->prepend($this->option('view-path'));
+            ->prepend($this->option('view-path'))
+            ->replace('//', '/')
+            ->trim('/');
 
-        $name = $filePath->afterLast('/');
-        $path = $filePath->beforeLast('/');
+        $name = $input->afterLast('/')->replace('-', '_')->snake();
+        $path = $input->beforeLast('/');
+        $filePath = "$path/$name";
         $fullpath = $this->getPath($filePath);
         $layout = $this->option('layout');
 
-        $this->infoBlock("Creating {$name->title()} page");
+        $this->infoBlock("Creating {$name->replace('_', ' ')->title()} page");
 
         $this->progressBlock("Creating view <fg=blue>resources/views/${filePath}.php</>");
 
         // check if the file already exists
-        if ((! $this->hasOption('force') || ! $this->option('force')) && $this->alreadyExists($fullpath)) {
+        if ((! $this->hasOption('force') || ! $this->option('force')) && $this->alreadyExists($filePath)) {
             $this->closeProgressBlock('Already existed', 'yellow');
 
             return false;

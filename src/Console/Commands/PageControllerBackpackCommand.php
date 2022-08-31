@@ -47,25 +47,25 @@ class PageControllerBackpackCommand extends GeneratorCommand
     public function handle()
     {
         $name = $this->getNameInput();
-        $this->progressBlock("Creating controller <fg=blue>${name}Controller</>");
+        $class = $this->qualifyClass($name);
+        $fullPath = $this->getPath($class);
+        $path = Str::of($fullPath)->after(base_path())->trim('\\/');
 
-        if ($this->isReservedName($this->getNameInput())) {
+        $this->progressBlock("Creating controller <fg=blue>{$path}</>");
+
+        if ($this->isReservedName($name)) {
             $this->errorProgressBlock();
             $this->note("The name '$name' is reserved by PHP.", 'red');
 
             return false;
         }
 
-        $name = $this->qualifyClass($this->getNameInput());
-
-        $path = $this->getPath($name);
-
         // Next, We will check to see if the class already exists. If it does, we don't want
         // to create the class and overwrite the user's code. So, we will bail out so the
         // code is untouched. Otherwise, we will continue generating this class' files.
         if ((! $this->hasOption('force') ||
             ! $this->option('force')) &&
-            $this->alreadyExists($this->getNameInput())) {
+            $this->alreadyExists($class)) {
             $this->closeProgressBlock('Already existed', 'yellow');
 
             return false;
@@ -74,9 +74,9 @@ class PageControllerBackpackCommand extends GeneratorCommand
         // Next, we will generate the path to the location where this class' file should get
         // written. Then, we will build the class and make the proper replacements on the
         // stub files so that it gets the correctly formatted namespace and class name.
-        $this->makeDirectory($path);
+        $this->makeDirectory($fullPath);
 
-        $this->files->put($path, $this->sortImports($this->buildClass($name)));
+        $this->files->put($fullPath, $this->sortImports($this->buildClass($class)));
 
         $this->closeProgressBlock();
     }
