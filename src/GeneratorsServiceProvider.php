@@ -32,7 +32,7 @@ class GeneratorsServiceProvider extends ServiceProvider
         ChartBackpackCommand::class,
         ModelBackpackCommand::class,
         RequestBackpackCommand::class,
-        ViewBackpackCommand::class,        
+        ViewBackpackCommand::class,
     ];
 
     /**
