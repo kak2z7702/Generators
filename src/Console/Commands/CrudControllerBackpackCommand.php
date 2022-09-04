@@ -50,7 +50,7 @@ class CrudControllerBackpackCommand extends GeneratorCommand
         $name = $this->qualifyClass($this->getNameInput());
         $path = $this->getPath($name);
         $relativePath = Str::of($path)->after(base_path())->trim('\\/');
-        
+
         $this->progressBlock("Creating Controller <fg=blue>$relativePath</>");
 
         // Next, We will check to see if the class already exists. If it does, we don't want
