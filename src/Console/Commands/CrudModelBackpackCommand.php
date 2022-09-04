@@ -56,8 +56,9 @@ class CrudModelBackpackCommand extends GeneratorCommand
         $name = $this->getNameInput();
         $namespaceApp = $this->qualifyClass($this->getNameInput());
         $namespaceModels = $this->qualifyClass('/Models/'.$this->getNameInput());
+        $relativePath = Str::of("$namespaceModels.php")->lcfirst()->replace('\\', '/');
 
-        $this->progressBlock("Creating $namespaceModels");
+        $this->progressBlock("Creating Model <fg=blue>$relativePath</>");
 
         // Check if exists on app or models
         $existsOnApp = $this->alreadyExists($namespaceApp);
@@ -97,7 +98,7 @@ class CrudModelBackpackCommand extends GeneratorCommand
         // As the class already exists, we don't want to create the class and overwrite the
         // user's code. We just make sure it uses CrudTrait. We add that one line.
         if (! $this->hasOption('force') || ! $this->option('force')) {
-            $this->progressBlock('Adding CrudTrait to model');
+            $this->progressBlock('Adding CrudTrait to the Model');
 
             $file = $this->files->get($path);
             $lines = preg_split('/(\r\n)|\r|\n/', $file);

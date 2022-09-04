@@ -3,6 +3,7 @@
 namespace Backpack\Generators\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Str;
 
 class CrudRequestBackpackCommand extends GeneratorCommand
 {
@@ -47,8 +48,9 @@ class CrudRequestBackpackCommand extends GeneratorCommand
     {
         $name = $this->qualifyClass($this->getNameInput());
         $path = $this->getPath($name);
+        $relativePath = Str::of($path)->after(base_path())->trim('\\/');
 
-        $this->progressBlock("Creating ${name}Request");
+        $this->progressBlock("Creating Request <fg=blue>$relativePath</>");
 
         // Next, We will check to see if the class already exists. If it does, we don't want
         // to create the class and overwrite the user's code. So, we will bail out so the
