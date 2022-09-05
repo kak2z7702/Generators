@@ -22,7 +22,8 @@ class CrudControllerBackpackCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'backpack:crud-controller {name}';
+    protected $signature = 'backpack:crud-controller {name}
+        {--validation=request : Validation type, must be request, array or field}';
 
     /**
      * The console command description.
@@ -200,6 +201,30 @@ class CrudControllerBackpackCommand extends GeneratorCommand
     }
 
     /**
+     * Replace the class name for the given stub.
+     *
+     * @param  string  $stub
+     * @param  string  $name
+     * @return string
+     */
+    protected function replaceRequest(&$stub)
+    {
+        $validation = $this->option('validation');
+
+        // replace request class when validation is array
+        if($validation === 'array') {
+            $stub = str_replace('DummyClassRequest::class', "[\n            // 'name' => 'required|min:2',\n        ]", $stub);
+        }
+
+        // remove the validation class when validation is field
+        if($validation === 'field') {
+            $stub = str_replace("        CRUD::setValidation(DummyClassRequest::class);\n\n", '', $stub);
+        }
+
+        return $this;
+    }
+
+    /**
      * Build the class with the given name.
      *
      * @param  string  $name
@@ -210,9 +235,10 @@ class CrudControllerBackpackCommand extends GeneratorCommand
         $stub = $this->files->get($this->getStub());
 
         $this->replaceNamespace($stub, $name)
-                ->replaceNameStrings($stub, $name)
-                ->replaceModel($stub, $name)
-                ->replaceSetFromDb($stub, $name);
+            ->replaceRequest($stub)
+            ->replaceNameStrings($stub, $name)
+            ->replaceModel($stub, $name)
+            ->replaceSetFromDb($stub, $name);
 
         return $stub;
     }

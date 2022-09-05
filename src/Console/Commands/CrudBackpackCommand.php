@@ -14,7 +14,8 @@ class CrudBackpackCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'backpack:crud {name}';
+    protected $signature = 'backpack:crud {name}
+        {--validation= : Validation type, must be request, array or field}';
 
     /**
      * The console command description.
@@ -44,14 +45,22 @@ class CrudBackpackCommand extends GeneratorCommand
 
         $this->infoBlock("Creating CRUD for the <fg=blue>$nameTitle</> model:");
 
+        // Validate validation option
+        $validation = $this->handleValidationOption();
+        if (! $validation) {
+            return false;
+        }
+
         // Create the CRUD Model and show output
         $this->call('backpack:crud-model', ['name' => $nameTitle]);
 
         // Create the CRUD Controller and show output
-        $this->call('backpack:crud-controller', ['name' => $nameTitle]);
+        $this->call('backpack:crud-controller', ['name' => $nameTitle, '--validation' => $validation]);
 
         // Create the CRUD Request and show output
-        $this->call('backpack:crud-request', ['name' => $nameTitle]);
+        if ($validation === 'request') {
+            $this->call('backpack:crud-request', ['name' => $nameTitle]);
+        }
 
         // Create the CRUD route
         $this->call('backpack:add-custom-route', [
@@ -74,6 +83,37 @@ class CrudBackpackCommand extends GeneratorCommand
         $this->newLine();
         $this->line("  Done! Go to <fg=blue>$url</> to see the CRUD in action.");
         $this->newLine();
+    }
+
+    /**
+     * Handle validation Option.
+     *
+     * @return string
+     */
+    private function handleValidationOption()
+    {
+        $options = ['request', 'array', 'field'];
+
+        // Validate validation option
+        $validation = $this->option('validation');
+
+        if (! $validation) {
+            $validation = $this->askHint(
+                'How would you like to enter your validation rules for the Create and Update Operations?', [
+                    'More info at <fg=blue>https://backpackforlaravel.com/docs/5.x/crud-operation-create#validation</>',
+                    'Valid options are <fg=blue>request</>, <fg=blue>array</> or <fg=blue>field</>',
+                ], $options[0]);
+
+            $this->deleteLines(5);
+        }
+
+        if (! in_array($validation, $options)) {
+            $this->errorBlock("The validation must be request, array or field. '$validation' is not valid.");
+
+            return false;
+        }
+
+        return $validation;
     }
 
     /**
