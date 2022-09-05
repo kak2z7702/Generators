@@ -212,12 +212,12 @@ class CrudControllerBackpackCommand extends GeneratorCommand
         $validation = $this->option('validation');
 
         // replace request class when validation is array
-        if($validation === 'array') {
+        if ($validation === 'array') {
             $stub = str_replace('DummyClassRequest::class', "[\n            // 'name' => 'required|min:2',\n        ]", $stub);
         }
 
         // remove the validation class when validation is field
-        if($validation === 'field') {
+        if ($validation === 'field') {
             $stub = str_replace("        CRUD::setValidation(DummyClassRequest::class);\n\n", '', $stub);
         }
 
