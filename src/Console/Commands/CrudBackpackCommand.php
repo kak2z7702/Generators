@@ -99,7 +99,7 @@ class CrudBackpackCommand extends GeneratorCommand
 
         if (! $validation) {
             $validation = $this->askHint(
-                'How would you like to enter your validation rules for the Create and Update Operations?', [
+                'How would you like to define your validation rules, for the Create and Update operations?', [
                     'More info at <fg=blue>https://backpackforlaravel.com/docs/5.x/crud-operation-create#validation</>',
                     'Valid options are <fg=blue>request</>, <fg=blue>array</> or <fg=blue>field</>',
                 ], $options[0]);
