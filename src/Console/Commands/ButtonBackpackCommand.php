@@ -65,7 +65,7 @@ class ButtonBackpackCommand extends GeneratorCommand
     public function fire()
     {
         $name = Str::of($this->getNameInput());
-        $path = $this->getPath($name);
+        $path = $this->getPath($name);        
 
         if ($this->alreadyExists($this->getNameInput())) {
             $this->error($this->type.' already existed!');
@@ -74,7 +74,7 @@ class ButtonBackpackCommand extends GeneratorCommand
         }
 
         $this->infoBlock("Creating {$name->replace('_', ' ')->title()} {$this->type}");
-        $this->progressBlock("Creating view <fg=blue>${path}.blade.php</>");
+        $this->progressBlock("Creating view <fg=blue>resources/views/vendor/backpack/crud/buttons/${name}.blade.php</>");
 
         $this->makeDirectory($path);
         $this->files->put($path, $this->buildClass($name));
