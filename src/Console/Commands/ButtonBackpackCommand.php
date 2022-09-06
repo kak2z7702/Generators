@@ -3,9 +3,11 @@
 namespace Backpack\Generators\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Str;
 
 class ButtonBackpackCommand extends GeneratorCommand
 {
+    use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
     /**
      * The console command name.
      *
@@ -62,8 +64,7 @@ class ButtonBackpackCommand extends GeneratorCommand
      */
     public function fire()
     {
-        $name = $this->getNameInput();
-
+        $name = Str::of($this->getNameInput());
         $path = $this->getPath($name);
 
         if ($this->alreadyExists($this->getNameInput())) {
@@ -72,10 +73,14 @@ class ButtonBackpackCommand extends GeneratorCommand
             return false;
         }
 
+        $this->infoBlock("Creating {$name->replace('_', ' ')->title()} {$this->type}");
+        $this->progressBlock("Creating view <fg=blue>${path}.blade.php</>");
+
         $this->makeDirectory($path);
-
         $this->files->put($path, $this->buildClass($name));
-
+        
+        $this->closeProgressBlock();
+        $this->newLine();
         $this->info($this->type.' created successfully.');
     }
 
@@ -98,7 +103,7 @@ class ButtonBackpackCommand extends GeneratorCommand
      */
     protected function getPath($name)
     {
-        return $this->laravel['path'].'/../resources/views/vendor/backpack/crud/buttons/'.str_replace('\\', '/', $name).'.blade.php';
+        return resource_path("views/vendor/backpack/crud/buttons/$name.blade.php");        
     }
 
     /**
