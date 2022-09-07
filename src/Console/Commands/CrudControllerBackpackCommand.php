@@ -50,8 +50,9 @@ class CrudControllerBackpackCommand extends GeneratorCommand
     {
         $name = $this->qualifyClass($this->getNameInput());
         $path = $this->getPath($name);
+        $relativePath = Str::of($path)->after(base_path())->trim('\\/');
 
-        $this->progressBlock("Creating ${name}CrudController");
+        $this->progressBlock("Creating Controller <fg=blue>$relativePath</>");
 
         // Next, We will check to see if the class already exists. If it does, we don't want
         // to create the class and overwrite the user's code. So, we will bail out so the
@@ -212,12 +213,12 @@ class CrudControllerBackpackCommand extends GeneratorCommand
         $validation = $this->option('validation');
 
         // replace request class when validation is array
-        if($validation === 'array') {
+        if ($validation === 'array') {
             $stub = str_replace('DummyClassRequest::class', "[\n            // 'name' => 'required|min:2',\n        ]", $stub);
         }
 
         // remove the validation class when validation is field
-        if($validation === 'field') {
+        if ($validation === 'field') {
             $stub = str_replace("        CRUD::setValidation(DummyClassRequest::class);\n\n", '', $stub);
         }
 
