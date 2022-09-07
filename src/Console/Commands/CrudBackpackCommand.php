@@ -104,7 +104,7 @@ class CrudBackpackCommand extends GeneratorCommand
                     'Valid options are <fg=blue>request</>, <fg=blue>array</> or <fg=blue>field</>',
                 ], $options[0]);
 
-            if(!$this->option('no-interaction')) {
+            if (! $this->option('no-interaction')) {
                 $this->deleteLines(5);
             }
         }
