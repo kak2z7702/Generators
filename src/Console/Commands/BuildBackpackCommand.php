@@ -3,7 +3,7 @@
 namespace Backpack\Generators\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class BuildBackpackCommand extends Command
@@ -40,7 +40,7 @@ class BuildBackpackCommand extends Command
             return;
         }
 
-        foreach ($models as $key => $model) {
+        foreach ($models as $model) {
             $this->call('backpack:crud', ['name' => $model]);
             $this->line('  <fg=gray>----------</>');
         }
@@ -62,10 +62,29 @@ class BuildBackpackCommand extends Command
             if (is_dir($filename)) {
                 $out = array_merge($out, $this->getModels($filename));
             } else {
-                $file_content = file_get_contents($filename);
-                if (Str::contains($file_content, 'Illuminate\Database\Eloquent\Model') &&
-                    Str::contains($file_content, 'extends Model')) {
-                    $out[] = Arr::last(explode('/', substr($filename, 0, -4)));
+                require_once $filename;
+
+                // Try to load it by path as namespace
+                $class = Str::of($filename)
+                    ->after(base_path())
+                    ->trim('\\/')
+                    ->replace('/', '\\')
+                    ->before('.php')
+                    ->ucfirst();
+
+                if (is_a($class->value(), Model::class, true)) {
+                    $out[] = $class->afterLast('\\');
+                    continue;
+                }
+
+                // Try to load it from file content
+                $fileContent = Str::of(file_get_contents($filename));
+                $namespace = $fileContent->match('/namespace (.*);/')->value();
+                $classname = $fileContent->match('/class (\w+)/')->value();
+
+                if ($namespace && $classname && is_a("$namespace\\$classname", \Illuminate\Database\Eloquent\Model::class, true)) {
+                    $out[] = $classname;
+                    continue;
                 }
             }
         }
