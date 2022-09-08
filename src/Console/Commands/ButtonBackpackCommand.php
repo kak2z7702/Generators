@@ -65,7 +65,7 @@ class ButtonBackpackCommand extends GeneratorCommand
     public function fire()
     {
         $name = Str::of($this->getNameInput());
-        $path = $this->getPath($name);        
+        $path = $this->getPath($name);
 
         if ($this->alreadyExists($this->getNameInput())) {
             $this->error($this->type.' already existed!');
@@ -78,7 +78,7 @@ class ButtonBackpackCommand extends GeneratorCommand
 
         $this->makeDirectory($path);
         $this->files->put($path, $this->buildClass($name));
-        
+
         $this->closeProgressBlock();
         $this->newLine();
         $this->info($this->type.' created successfully.');
@@ -103,7 +103,7 @@ class ButtonBackpackCommand extends GeneratorCommand
      */
     protected function getPath($name)
     {
-        return resource_path("views/vendor/backpack/crud/buttons/$name.blade.php");        
+        return resource_path("views/vendor/backpack/crud/buttons/$name.blade.php");
     }
 
     /**
@@ -116,7 +116,7 @@ class ButtonBackpackCommand extends GeneratorCommand
     {
         $stub = $this->files->get($this->getStub());
         $stub = str_replace('dummy', $name, $stub);
-        
+
         return $stub;
     }
 
