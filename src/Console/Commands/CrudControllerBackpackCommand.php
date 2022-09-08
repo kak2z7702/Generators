@@ -3,7 +3,6 @@
 namespace Backpack\Generators\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class CrudControllerBackpackCommand extends GeneratorCommand
