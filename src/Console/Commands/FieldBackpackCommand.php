@@ -4,6 +4,9 @@ namespace Backpack\Generators\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Backpack\CRUD\ViewNamespaces;
+use Illuminate\View\FileViewFinder;
+
 
 class FieldBackpackCommand extends GeneratorCommand
 {
@@ -20,7 +23,7 @@ class FieldBackpackCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'backpack:field {name} {--from=} {--withAssets}';
+    protected $signature = 'backpack:field {name} {--from=}';
 
     /**
      * The console command description.
@@ -43,12 +46,7 @@ class FieldBackpackCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        $field = "text";
-        if ($this->option('from')) {
-            $field = Str::of($this->option('from'));
-        }
-
-        return base_path("vendor/backpack/crud/src/resources/views/crud/fields/$field.blade.php");
+        return __DIR__ . '/../stubs/field.stub';
     }
 
     /**
@@ -73,28 +71,42 @@ class FieldBackpackCommand extends GeneratorCommand
         $path = $this->getPath($name);
 
         if ($this->alreadyExists($this->getNameInput())) {
-            $this->error("Error : $this->type already existed!");
+            $this->error("Error : $this->type $name already existed!");
 
             return false;
+        }
+
+        $src = null;
+        if ($this->option('from')) {
+            $field = Str::of($this->option('from'));
+            $arr = ViewNamespaces::getFor("fields");
+            foreach ($arr as $key => $value) {
+                $viewPath = $value . '.' . $field;
+                if (view()->exists($viewPath)) {
+                    $src = view($viewPath)->getPath();
+                    break;
+                }
+            }
+            if ($src == null) {
+                $this->error("Error : $this->type $field does not exist!");
+
+                return false;
+            }
         }
 
         $this->infoBlock("Creating {$name->replace('_', ' ')->title()} {$this->type}");
         $this->progressBlock("Creating view <fg=blue>resources/views/vendor/backpack/crud/fields/{$name->snake('_')}.blade.php</>");
-        
-        try {
-            $this->makeDirectory($path);
-            $this->files->put($path, $this->buildClass($name));
-        } catch (\Throwable $th) {
-            $this->newLine();
-            $this->newLine();
-            $this->error("Error : $this->type ".$th->getMessage());
 
-            return false;
+        $this->makeDirectory($path);
+        if($src!=null){
+            $this->files->copy($src, $path);
         }
+        else
+            $this->files->put($path, $this->buildClass($name));
 
         $this->closeProgressBlock();
         $this->newLine();
-        $this->info($this->type.' created successfully.');
+        $this->info($this->type . ' created successfully.');
     }
 
     /**
@@ -130,16 +142,11 @@ class FieldBackpackCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $stub =  $this->files->get($this->getStub());
-        if ($this->option('withAssets')) {
-            $asset = $this->files->get(__DIR__.'/../stubs/with-assets.stub');
-            $asset = str_replace('my_field', $name->snake('_'), $asset);
-            $asset = str_replace('myField', $name->camel(), $asset);
-            $asset = str_replace('MyField', $name->studly(), $asset);
-            $stub.=$asset;
-        }
+        $stub = str_replace('dummy_field', $name->snake('_'), $stub);
+        $stub = str_replace('dummyField', $name->camel(), $stub);
+        $stub = str_replace('DummyField', $name->studly(), $stub);
 
         return $stub;
-
     }
 
     /**
@@ -149,8 +156,6 @@ class FieldBackpackCommand extends GeneratorCommand
      */
     protected function getOptions()
     {
-        return [
-
-        ];
+        return [];
     }
 }

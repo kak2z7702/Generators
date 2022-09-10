@@ -1,0 +1,29 @@
+{{-- dummy_field field --}}
+@include('crud::fields.inc.wrapper_start')
+<label>{!! $field['label'] !!}</label>
+@include('crud::fields.inc.translatable_icon')
+<input type="text" name="{{ $field['name'] }}" data-init-function="bpFieldInitDummyFieldElement"
+    value="{{ old_empty_or_null($field['name'], '') ?? ($field['value'] ?? ($field['default'] ?? '')) }}"
+    @include('crud::fields.inc.attributes')>
+{{-- HINT --}}
+@if (isset($field['hint']))
+    <p class="help-block">{!! $field['hint'] !!}</p>
+@endif
+@include('crud::fields.inc.wrapper_end')
+@push('crud_fields_styles')
+    @loadOnce('dummy_field_style')
+    <style>
+        .dummy_field_class {
+            display: none;
+        }
+    </style>
+    @endLoadOnce
+@endpush
+@push('crud_fields_scripts')
+    @loadOnce(asset('dummyFieldScript.js')
+    @loadOnce('bpFieldInitDummyFieldElement')
+        function bpFieldInitDummyFieldElement(element) {
+        // element is the jquery wrapped element where init function is defined.
+        }
+    @endLoadOnce
+@endpush
