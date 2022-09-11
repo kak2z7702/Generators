@@ -85,7 +85,19 @@ php artisan backpack:config {Entity_name}
 - Generate a button
 
 ``` bash
-php artisan backpack:button {Entity_name}
+php artisan backpack:button {button_name}
+```
+
+- Generate a field
+
+``` bash
+php artisan backpack:field {field_name}
+```
+
+- Generate a field starting from another field
+
+``` bash
+php artisan backpack:field {field_name} --from={original_field_name}
 ```
 
 ## Change log
