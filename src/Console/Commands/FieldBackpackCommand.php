@@ -2,11 +2,9 @@
 
 namespace Backpack\Generators\Console\Commands;
 
+use Backpack\CRUD\ViewNamespaces;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
-use Backpack\CRUD\ViewNamespaces;
-use Illuminate\View\FileViewFinder;
-
 
 class FieldBackpackCommand extends GeneratorCommand
 {
@@ -46,7 +44,7 @@ class FieldBackpackCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__ . '/../stubs/field.stub';
+        return __DIR__.'/../stubs/field.stub';
     }
 
     /**
@@ -79,9 +77,9 @@ class FieldBackpackCommand extends GeneratorCommand
         $src = null;
         if ($this->option('from')) {
             $field = Str::of($this->option('from'));
-            $arr = ViewNamespaces::getFor("fields");
+            $arr = ViewNamespaces::getFor('fields');
             foreach ($arr as $key => $value) {
-                $viewPath = $value . '.' . $field;
+                $viewPath = $value.'.'.$field;
                 if (view()->exists($viewPath)) {
                     $src = view($viewPath)->getPath();
                     break;
@@ -98,15 +96,15 @@ class FieldBackpackCommand extends GeneratorCommand
         $this->progressBlock("Creating view <fg=blue>resources/views/vendor/backpack/crud/fields/{$name->snake('_')}.blade.php</>");
 
         $this->makeDirectory($path);
-        if($src!=null){
+        if ($src != null) {
             $this->files->copy($src, $path);
-        }
-        else
+        } else {
             $this->files->put($path, $this->buildClass($name));
+        }
 
         $this->closeProgressBlock();
         $this->newLine();
-        $this->info($this->type . ' created successfully.');
+        $this->info($this->type.' created successfully.');
     }
 
     /**
@@ -141,7 +139,7 @@ class FieldBackpackCommand extends GeneratorCommand
      */
     protected function buildClass($name)
     {
-        $stub =  $this->files->get($this->getStub());
+        $stub = $this->files->get($this->getStub());
         $stub = str_replace('dummy_field', $name->snake('_'), $stub);
         $stub = str_replace('dummyField', $name->camel(), $stub);
         $stub = str_replace('DummyField', $name->studly(), $stub);
