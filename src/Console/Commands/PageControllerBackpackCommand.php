@@ -4,6 +4,7 @@ namespace Backpack\Generators\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
 
 class PageControllerBackpackCommand extends GeneratorCommand
 {
@@ -84,7 +85,7 @@ class PageControllerBackpackCommand extends GeneratorCommand
     /**
      * Get the desired class name from the input.
      *
-     * @return string
+     * @return Stringable
      */
     protected function getNameInput()
     {
@@ -158,7 +159,7 @@ class PageControllerBackpackCommand extends GeneratorCommand
         $name = $this->getNameInput();
 
         $stub = str_replace('DummyName', $name, $stub);
-        $stub = str_replace('dummyName', $name->lcfirst(), $stub);
+        $stub = str_replace('dummyName', lcfirst($name), $stub);
         $stub = str_replace('Dummy Name', $name->kebab()->replace('-', ' ')->title(), $stub);
 
         return $this;

@@ -56,7 +56,7 @@ class CrudModelBackpackCommand extends GeneratorCommand
         $name = $this->getNameInput();
         $namespaceApp = $this->qualifyClass($this->getNameInput());
         $namespaceModels = $this->qualifyClass('/Models/'.$this->getNameInput());
-        $relativePath = Str::of("$namespaceModels.php")->lcfirst()->replace('\\', '/');
+        $relativePath = lcfirst(Str::of("$namespaceModels.php")->replace('\\', '/'));
 
         $this->progressBlock("Creating Model <fg=blue>$relativePath</>");
 
