@@ -3,7 +3,6 @@
 namespace Backpack\Generators\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class CrudControllerBackpackCommand extends GeneratorCommand
@@ -162,26 +161,27 @@ class CrudControllerBackpackCommand extends GeneratorCommand
         }
 
         $attributes = $this->getAttributes($model);
+        $fields = array_diff($attributes, ['id', 'created_at', 'updated_at', 'deleted_at']);
+        $columns = array_diff($attributes, ['id']);
+        $glue = PHP_EOL.'        ';
 
         // create an array with the needed code for defining fields
-        $fields = Arr::except($attributes, ['id', 'created_at', 'updated_at', 'deleted_at']);
         $fields = collect($fields)
             ->map(function ($field) {
                 return "CRUD::field('$field');";
             })
-            ->toArray();
+            ->join($glue);
 
         // create an array with the needed code for defining columns
-        $columns = Arr::except($attributes, ['id']);
         $columns = collect($columns)
             ->map(function ($column) {
                 return "CRUD::column('$column');";
             })
-            ->toArray();
+            ->join($glue);
 
         // replace setFromDb with actual fields and columns
-        $stub = str_replace('CRUD::setFromDb(); // fields', implode(PHP_EOL.'        ', $fields), $stub);
-        $stub = str_replace('CRUD::setFromDb(); // columns', implode(PHP_EOL.'        ', $columns), $stub);
+        $stub = str_replace('CRUD::setFromDb(); // fields', $fields, $stub);
+        $stub = str_replace('CRUD::setFromDb(); // columns', $columns, $stub);
 
         return $this;
     }

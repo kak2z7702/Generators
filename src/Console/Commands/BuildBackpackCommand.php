@@ -15,7 +15,8 @@ class BuildBackpackCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'backpack:build';
+    protected $signature = 'backpack:build
+        {--validation=request : Validation type, must be request, array or field}';
 
     /**
      * The console command description.
@@ -41,7 +42,7 @@ class BuildBackpackCommand extends Command
         }
 
         foreach ($models as $model) {
-            $this->call('backpack:crud', ['name' => $model]);
+            $this->call('backpack:crud', ['name' => $model, '--validation' => $this->option('validation')]);
             $this->line('  <fg=gray>----------</>');
         }
 
