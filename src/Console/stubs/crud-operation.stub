@@ -53,6 +53,6 @@ trait DummyClassOperation
         $this->data['title'] = $this->crud->getTitle() ?? 'Dummy Class '.$this->crud->entity_name;
 
         // load the view
-        return view("crud::operations.dummy_class", $this->data);
+        return view('crud::operations.dummy_class', $this->data);
     }
 }
