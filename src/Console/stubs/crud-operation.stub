@@ -3,6 +3,7 @@
 namespace DummyNamespace;
 
 use Illuminate\Support\Facades\Route;
+use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 trait DummyClassOperation
 {
@@ -27,15 +28,15 @@ trait DummyClassOperation
      */
     protected function setupDummyClassDefaults()
     {
-        $this->crud->allowAccess('dummyClass');
+        CRUD::allowAccess('dummyClass');
 
-        $this->crud->operation('dummyClass', function () {
-            $this->crud->loadDefaultOperationSettingsFromConfig();
+        CRUD::operation('dummyClass', function () {
+            CRUD::loadDefaultOperationSettingsFromConfig();
         });
 
-        $this->crud->operation('list', function () {
-            // $this->crud->addButton('top', 'dummy_class', 'view', 'crud::buttons.dummy_class');
-            // $this->crud->addButton('line', 'dummy_class', 'view', 'crud::buttons.dummy_class');
+        CRUD::operation('list', function () {
+            // CRUD::addButton('top', 'dummy_class', 'view', 'crud::buttons.dummy_class');
+            // CRUD::addButton('line', 'dummy_class', 'view', 'crud::buttons.dummy_class');
         });
     }
 
@@ -46,11 +47,11 @@ trait DummyClassOperation
      */
     public function dummyClass()
     {
-        $this->crud->hasAccessOrFail('dummyClass');
+        CRUD::hasAccessOrFail('dummyClass');
 
         // prepare the fields you need to show
         $this->data['crud'] = $this->crud;
-        $this->data['title'] = $this->crud->getTitle() ?? 'Dummy Class '.$this->crud->entity_name;
+        $this->data['title'] = CRUD::getTitle() ?? 'Dummy Class '.$this->crud->entity_name;
 
         // load the view
         return view('crud::operations.dummy_class', $this->data);
