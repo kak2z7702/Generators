@@ -105,7 +105,8 @@ class BuildBackpackCommand extends Command
             if ($reflection->isSubclassOf(Model::class) && ! $reflection->isAbstract()) {
                 return Str::of($class)->afterLast('\\');
             }
-        } catch (\Throwable$e) {}
+        } catch (\Throwable$e) {
+        }
 
         return null;
     }
