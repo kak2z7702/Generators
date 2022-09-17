@@ -49,47 +49,64 @@ class BuildBackpackCommand extends Command
         $this->deleteLines();
     }
 
-    private function getModels($path)
+    private function getModels(string $path): array
     {
         $out = [];
         $results = scandir($path);
 
         foreach ($results as $result) {
-            if ($result === '.' or $result === '..') {
+            $filepath = "$path/$result";
+
+            // ignore hidden filed
+            if ($result[0] === '.') {
                 continue;
             }
-            $filename = $path.'/'.$result;
 
-            if (is_dir($filename)) {
-                $out = array_merge($out, $this->getModels($filename));
-            } else {
-                require_once $filename;
+            if (is_dir($filepath)) {
+                $out = array_merge($out, $this->getModels($filepath));
+                continue;
+            }
 
-                // Try to load it by path as namespace
-                $class = Str::of($filename)
-                    ->after(base_path())
-                    ->trim('\\/')
-                    ->replace('/', '\\')
-                    ->before('.php')
-                    ->ucfirst();
+            // Try to load it by path as namespace
+            $class = Str::of($filepath)
+                ->after(base_path())
+                ->trim('\\/')
+                ->replace('/', '\\')
+                ->before('.php')
+                ->ucfirst()
+                ->value();
 
-                if (is_a($class->value(), Model::class, true)) {
-                    $out[] = $class->afterLast('\\');
-                    continue;
-                }
+            $result = $this->validateModelClass($class);
+            if ($result) {
+                $out[] = $result;
+                continue;
+            }
 
-                // Try to load it from file content
-                $fileContent = Str::of(file_get_contents($filename));
-                $namespace = $fileContent->match('/namespace (.*);/')->value();
-                $classname = $fileContent->match('/class (\w+)/')->value();
+            // Try to load it from file content
+            $fileContent = Str::of(file_get_contents($filepath));
+            $namespace = $fileContent->match('/namespace (.*);/')->value();
+            $classname = $fileContent->match('/class (\w+)/')->value();
 
-                if ($namespace && $classname && is_a("$namespace\\$classname", \Illuminate\Database\Eloquent\Model::class, true)) {
-                    $out[] = $classname;
-                    continue;
-                }
+            $result = $this->validateModelClass("$namespace\\$classname");
+            if ($result) {
+                $out[] = $result;
+                continue;
             }
         }
 
         return $out;
+    }
+
+    private function validateModelClass(string $class): ?string
+    {
+        try {
+            $reflection = new \ReflectionClass($class);
+
+            if ($reflection->isSubclassOf(Model::class) && ! $reflection->isAbstract()) {
+                return Str::of($class)->afterLast('\\');
+            }
+        } catch (\Throwable$e) {}
+
+        return null;
     }
 }
