@@ -139,7 +139,7 @@ class ColumnBackpackCommand extends GeneratorCommand
      */
     protected function buildClass($name)
     {
-        $stub = $this->files->get($this->getStub());       
+        $stub = $this->files->get($this->getStub());
 
         return $stub;
     }
