@@ -6,6 +6,7 @@ use Backpack\Generators\Console\Commands\BuildBackpackCommand;
 use Backpack\Generators\Console\Commands\ButtonBackpackCommand;
 use Backpack\Generators\Console\Commands\ChartBackpackCommand;
 use Backpack\Generators\Console\Commands\ChartControllerBackpackCommand;
+use Backpack\Generators\Console\Commands\ColumnBackpackCommand;
 use Backpack\Generators\Console\Commands\ConfigBackpackCommand;
 use Backpack\Generators\Console\Commands\CrudBackpackCommand;
 use Backpack\Generators\Console\Commands\CrudControllerBackpackCommand;
@@ -25,6 +26,7 @@ class GeneratorsServiceProvider extends ServiceProvider
     protected $commands = [
         BuildBackpackCommand::class,
         ButtonBackpackCommand::class,
+        ColumnBackpackCommand::class,
         ConfigBackpackCommand::class,
         CrudModelBackpackCommand::class,
         CrudControllerBackpackCommand::class,
