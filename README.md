@@ -92,12 +92,36 @@ php artisan backpack:button {button_name}
 
 ``` bash
 php artisan backpack:field {field_name}
+
+// or generate a field starting from another field
+php artisan backpack:field {field_name} --from={original_field_name}
 ```
 
-- Generate a field starting from another field
+- Generate a column
 
 ``` bash
-php artisan backpack:field {field_name} --from={original_field_name}
+php artisan backpack:column {column_name}
+
+// or generate a column starting from another column
+php artisan backpack:column {column_name} --from={original_column_name}
+```
+
+- Generate a filter
+
+``` bash
+php artisan backpack:filter {filter_name}
+
+// or generate a filter starting from another filter
+php artisan backpack:filter {filter_name} --from={original_filter_name}
+```
+
+- Generate a widget
+
+``` bash
+php artisan backpack:widget {widget_name}
+
+// or generate a widget starting from another widget
+php artisan backpack:widget {widget_name} --from={original_widget_name}
 ```
 
 ## Change log
