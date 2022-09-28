@@ -20,6 +20,7 @@ use Backpack\Generators\Console\Commands\PageBackpackCommand;
 use Backpack\Generators\Console\Commands\PageControllerBackpackCommand;
 use Backpack\Generators\Console\Commands\RequestBackpackCommand;
 use Backpack\Generators\Console\Commands\ViewBackpackCommand;
+use Backpack\Generators\Console\Commands\WidgetBackpackCommand;
 use Illuminate\Support\ServiceProvider;
 
 class GeneratorsServiceProvider extends ServiceProvider
@@ -43,6 +44,7 @@ class GeneratorsServiceProvider extends ServiceProvider
         PageControllerBackpackCommand::class,
         RequestBackpackCommand::class,
         ViewBackpackCommand::class,
+        WidgetBackpackCommand::class,
     ];
 
     /**
