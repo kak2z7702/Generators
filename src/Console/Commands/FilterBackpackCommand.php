@@ -39,7 +39,7 @@ class FilterBackpackCommand extends GeneratorCommand
     protected $type = 'Filter';
 
     /**
-     * View Namespace
+     * View Namespace.
      *
      * @var string
      */
