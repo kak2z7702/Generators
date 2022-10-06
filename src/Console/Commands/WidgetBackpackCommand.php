@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 class WidgetBackpackCommand extends GeneratorCommand
 {
     use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
+
     /**
      * The console command name.
      *
@@ -38,6 +39,13 @@ class WidgetBackpackCommand extends GeneratorCommand
     protected $type = 'Widget';
 
     /**
+     * View Namespace.
+     *
+     * @var string
+     */
+    protected $viewNamespace = 'widgets';
+
+    /**
      * Get the stub file for the generator.
      *
      * @return string
@@ -48,63 +56,60 @@ class WidgetBackpackCommand extends GeneratorCommand
     }
 
     /**
-     * Alias for the fire method.
-     *
-     * In Laravel 5.5 the fire() method has been renamed to handle().
-     * This alias provides support for both Laravel 5.4 and 5.5.
-     */
-    public function handle()
-    {
-        $this->fire();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return bool|null
      */
-    public function fire()
+    public function handle()
     {
         $name = Str::of($this->getNameInput());
-        $path = $this->getPath($name);
+        $path = Str::of($this->getPath($name));
+        $pathRelative = $path->after(base_path())->replace('\\', '/')->trim('/');
 
-        if ($this->alreadyExists($this->getNameInput())) {
-            $this->error("Error : $this->type $name already existed!");
+        $this->infoBlock("Creating {$name->replace('_', ' ')->title()} {$this->type}");
+        $this->progressBlock("Creating view <fg=blue>{$pathRelative}</>");
+
+        if ($this->alreadyExists($name)) {
+            $this->closeProgressBlock('Already existed', 'yellow');
 
             return false;
         }
 
-        $src = null;
+        $source = null;
         if ($this->option('from')) {
-            $widget = Str::of($this->option('from'));
-            $arr = ViewNamespaces::getFor('widgets');
-            foreach ($arr as $key => $value) {
-                $viewPath = $value.'.'.$widget;
+            $from = $this->option('from');
+            $namespaces = ViewNamespaces::getFor($this->viewNamespace);
+            foreach ($namespaces as $namespace) {
+                $viewPath = "$namespace.$from";
                 if (view()->exists($viewPath)) {
-                    $src = view($viewPath)->getPath();
+                    $source = view($viewPath)->getPath();
                     break;
                 }
             }
-            if ($src == null) {
-                $this->error("Error : $this->type $widget does not exist!");
+
+            // full file path may be provided
+            if (file_exists($from)) {
+                $source = $from;
+            }
+
+            if (! $source) {
+                $this->errorProgressBlock();
+                $this->note("$this->type '$from' does not exist!", 'red');
+                $this->newLine();
 
                 return false;
             }
         }
 
-        $this->infoBlock("Creating {$name->replace('_', ' ')->title()} {$this->type}");
-        $this->progressBlock("Creating view <fg=blue>resources/views/vendor/backpack/base/widgets/{$name->snake('_')}.blade.php</>");
-
         $this->makeDirectory($path);
-        if ($src != null) {
-            $this->files->copy($src, $path);
+
+        if ($source) {
+            $this->files->copy($source, $path);
         } else {
             $this->files->put($path, $this->buildClass($name));
         }
 
         $this->closeProgressBlock();
-        $this->newLine();
-        $this->info($this->type.' created successfully.');
     }
 
     /**
@@ -134,7 +139,7 @@ class WidgetBackpackCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param  string  $name
+     * @param  Str  $name
      * @return string
      */
     protected function buildClass($name)
@@ -148,12 +153,15 @@ class WidgetBackpackCommand extends GeneratorCommand
     }
 
     /**
-     * Get the console command options.
+     * Get the desired class name from the input.
      *
-     * @return array
+     * @return string
      */
-    protected function getOptions()
+    protected function getNameInput()
     {
-        return [];
+        return Str::of($this->argument('name'))
+            ->trim()
+            ->snake('_')
+            ->value;
     }
 }
