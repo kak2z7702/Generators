@@ -39,7 +39,7 @@ class ButtonBackpackCommand extends GeneratorCommand
     protected $type = 'Button';
 
     /**
-     * View Namespace
+     * View Namespace.
      *
      * @var string
      */

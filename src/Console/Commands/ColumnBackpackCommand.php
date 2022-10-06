@@ -39,7 +39,7 @@ class ColumnBackpackCommand extends GeneratorCommand
     protected $type = 'Column';
 
     /**
-     * View Namespace
+     * View Namespace.
      *
      * @var string
      */

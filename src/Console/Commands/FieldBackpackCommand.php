@@ -39,7 +39,7 @@ class FieldBackpackCommand extends GeneratorCommand
     protected $type = 'Field';
 
     /**
-     * View Namespace
+     * View Namespace.
      *
      * @var string
      */
@@ -139,7 +139,7 @@ class FieldBackpackCommand extends GeneratorCommand
     /**
      * Build the class with the given name.
      *
-     * @param  Str $name
+     * @param  Str  $name
      * @return string
      */
     protected function buildClass($name)

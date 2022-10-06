@@ -39,7 +39,7 @@ class WidgetBackpackCommand extends GeneratorCommand
     protected $type = 'Widget';
 
     /**
-     * View Namespace
+     * View Namespace.
      *
      * @var string
      */
