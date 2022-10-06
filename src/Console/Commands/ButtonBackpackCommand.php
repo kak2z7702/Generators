@@ -2,12 +2,14 @@
 
 namespace Backpack\Generators\Console\Commands;
 
+use Backpack\CRUD\ViewNamespaces;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 
 class ButtonBackpackCommand extends GeneratorCommand
 {
     use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
+
     /**
      * The console command name.
      *
@@ -20,7 +22,7 @@ class ButtonBackpackCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'backpack:button {name}';
+    protected $signature = 'backpack:button {name} {--from=}';
 
     /**
      * The console command description.
@@ -37,6 +39,13 @@ class ButtonBackpackCommand extends GeneratorCommand
     protected $type = 'Button';
 
     /**
+     * View Namespace
+     *
+     * @var string
+     */
+    protected $viewNamespace = 'buttons';
+
+    /**
      * Get the stub file for the generator.
      *
      * @return string
@@ -47,41 +56,60 @@ class ButtonBackpackCommand extends GeneratorCommand
     }
 
     /**
-     * Alias for the fire method.
-     *
-     * In Laravel 5.5 the fire() method has been renamed to handle().
-     * This alias provides support for both Laravel 5.4 and 5.5.
-     */
-    public function handle()
-    {
-        $this->fire();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return bool|null
      */
-    public function fire()
+    public function handle()
     {
         $name = Str::of($this->getNameInput());
-        $path = $this->getPath($name);
+        $path = Str::of($this->getPath($name));
+        $pathRelative = $path->after(base_path())->replace('\\', '/')->trim('/');
 
-        if ($this->alreadyExists($this->getNameInput())) {
-            $this->error($this->type.' already existed!');
+        $this->infoBlock("Creating {$name->replace('_', ' ')->title()} {$this->type}");
+        $this->progressBlock("Creating view <fg=blue>{$pathRelative}</>");
+
+        if ($this->alreadyExists($name)) {
+            $this->closeProgressBlock('Already existed', 'yellow');
 
             return false;
         }
 
-        $this->infoBlock("Creating {$name->replace('_', ' ')->title()} {$this->type}");
-        $this->progressBlock("Creating view <fg=blue>resources/views/vendor/backpack/crud/buttons/${name}.blade.php</>");
+        $source = null;
+        if ($this->option('from')) {
+            $from = $this->option('from');
+            $namespaces = ViewNamespaces::getFor($this->viewNamespace);
+            foreach ($namespaces as $namespace) {
+                $viewPath = "$namespace.$from";
+                if (view()->exists($viewPath)) {
+                    $source = view($viewPath)->getPath();
+                    break;
+                }
+            }
+
+            // full file path may be provided
+            if (file_exists($from)) {
+                $source = $from;
+            }
+
+            if (! $source) {
+                $this->errorProgressBlock();
+                $this->note("$this->type '$from' does not exist!", 'red');
+                $this->newLine();
+
+                return false;
+            }
+        }
 
         $this->makeDirectory($path);
-        $this->files->put($path, $this->buildClass($name));
+
+        if ($source) {
+            $this->files->copy($source, $path);
+        } else {
+            $this->files->put($path, $this->buildClass($name));
+        }
 
         $this->closeProgressBlock();
-        $this->newLine();
-        $this->info($this->type.' created successfully.');
     }
 
     /**
@@ -118,17 +146,5 @@ class ButtonBackpackCommand extends GeneratorCommand
         $stub = str_replace('dummy', $name, $stub);
 
         return $stub;
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-
-        ];
     }
 }
