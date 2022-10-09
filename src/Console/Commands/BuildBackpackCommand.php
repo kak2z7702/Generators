@@ -57,7 +57,7 @@ class BuildBackpackCommand extends Command
         foreach ($results as $result) {
             $filepath = "$path/$result";
 
-            // ignore `.` (dot) prefixed files 
+            // ignore `.` (dot) prefixed files
             if ($result[0] === '.') {
                 continue;
             }
