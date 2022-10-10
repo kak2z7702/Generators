@@ -22,7 +22,7 @@ class ButtonBackpackCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'backpack:button {name} {--from=}';
+    protected $signature = 'backpack:button {name?} {--from=}';
 
     /**
      * The console command description.
@@ -146,5 +146,27 @@ class ButtonBackpackCommand extends GeneratorCommand
         $stub = str_replace('dummy', $name, $stub);
 
         return $stub;
+    }
+
+    /**
+     * Get the desired class name from the input.
+     *
+     * @return string
+     */
+    protected function getNameInput()
+    {
+        $name = Str::of($this->argument('name'));
+        $from = Str::of($this->option('from'));
+
+        if ($name->isEmpty() && $from->isEmpty()) {
+            throw new \Exception('Not enough arguments (missing: "name" or "--from").');
+        }
+
+        // Name may come from the --from option
+        if ($name->isEmpty()) {
+            $name = $from->afterLast('/')->afterLast('\\');
+        }
+
+        return $name->trim()->snake('_')->value;
     }
 }

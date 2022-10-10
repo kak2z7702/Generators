@@ -22,7 +22,7 @@ class ColumnBackpackCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'backpack:column {name} {--from=}';
+    protected $signature = 'backpack:column {name?} {--from=}';
 
     /**
      * The console command description.
@@ -156,9 +156,18 @@ class ColumnBackpackCommand extends GeneratorCommand
      */
     protected function getNameInput()
     {
-        return Str::of($this->argument('name'))
-            ->trim()
-            ->snake('_')
-            ->value;
+        $name = Str::of($this->argument('name'));
+        $from = Str::of($this->option('from'));
+
+        if ($name->isEmpty() && $from->isEmpty()) {
+            throw new \Exception('Not enough arguments (missing: "name" or "--from").');
+        }
+
+        // Name may come from the --from option
+        if ($name->isEmpty()) {
+            $name = $from->afterLast('/')->afterLast('\\');
+        }
+
+        return $name->trim()->snake('_')->value;
     }
 }
