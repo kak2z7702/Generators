@@ -45,5 +45,4 @@ class WidgetBackpackCommand extends PublishOrCreateViewBackpackCommand
      * @var string
      */
     protected $stub = 'widget.stub';
-
 }

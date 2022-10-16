@@ -45,5 +45,4 @@ class ButtonBackpackCommand extends PublishOrCreateViewBackpackCommand
      * @var string
      */
     protected $stub = 'button.stub';
-
 }
