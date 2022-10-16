@@ -45,5 +45,4 @@ class FilterBackpackCommand extends PublishOrCreateViewBackpackCommand
      * @var string
      */
     protected $stub = 'filter.stub';
-
 }

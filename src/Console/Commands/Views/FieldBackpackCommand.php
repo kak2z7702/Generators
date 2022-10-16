@@ -45,5 +45,4 @@ class FieldBackpackCommand extends PublishOrCreateViewBackpackCommand
      * @var string
      */
     protected $stub = 'field.stub';
-
 }
