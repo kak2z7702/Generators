@@ -1,49 +1,14 @@
 <?php
 
-namespace Backpack\Generators\Console\Commands;
+namespace Backpack\Generators\Console\Commands\Views;
 
 use Backpack\CRUD\ViewNamespaces;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 
-class ColumnBackpackCommand extends GeneratorCommand
+abstract class PublishOrCreateViewBackpackCommand extends GeneratorCommand
 {
     use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
-
-    /**
-     * The console command name.
-     *
-     * @var string
-     */
-    protected $name = 'backpack:column';
-
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'backpack:column {name?} {--from=}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Generate a Backpack column';
-
-    /**
-     * The type of class being generated.
-     *
-     * @var string
-     */
-    protected $type = 'Column';
-
-    /**
-     * View Namespace.
-     *
-     * @var string
-     */
-    protected $viewNamespace = 'columns';
 
     /**
      * Get the stub file for the generator.
@@ -52,7 +17,7 @@ class ColumnBackpackCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/../stubs/column.stub';
+        return __DIR__.'/../../stubs/'.$this->stub;
     }
 
     /**
@@ -131,9 +96,7 @@ class ColumnBackpackCommand extends GeneratorCommand
      */
     protected function getPath($name)
     {
-        $file = Str::of($name)->snake('_');
-
-        return resource_path("views/vendor/backpack/crud/columns/$file.blade.php");
+        return resource_path("views/vendor/backpack/crud/{$this->viewNamespace}/$name.blade.php");
     }
 
     /**
@@ -145,6 +108,7 @@ class ColumnBackpackCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $stub = $this->files->get($this->getStub());
+        $stub = str_replace('dummy', $name, $stub);
 
         return $stub;
     }

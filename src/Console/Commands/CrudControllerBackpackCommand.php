@@ -243,16 +243,4 @@ class CrudControllerBackpackCommand extends GeneratorCommand
 
         return $stub;
     }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-
-        ];
-    }
 }

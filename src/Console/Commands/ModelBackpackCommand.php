@@ -90,16 +90,4 @@ class ModelBackpackCommand extends GeneratorCommand
 
         return $this->replaceNamespace($stub, $name)->replaceTable($stub, $name)->replaceClass($stub, $name);
     }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-
-        ];
-    }
 }

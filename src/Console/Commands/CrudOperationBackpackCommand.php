@@ -106,18 +106,6 @@ class CrudOperationBackpackCommand extends GeneratorCommand
     }
 
     /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-
-        ];
-    }
-
-    /**
      * Get the desired class name from the input.
      *
      * @return string

@@ -104,16 +104,4 @@ class CrudRequestBackpackCommand extends GeneratorCommand
     {
         return $rootNamespace.'\Http\Requests';
     }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-
-        ];
-    }
 }
