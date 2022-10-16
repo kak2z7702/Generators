@@ -45,5 +45,4 @@ class ColumnBackpackCommand extends PublishOrCreateViewBackpackCommand
      * @var string
      */
     protected $stub = 'column.stub';
-
 }
