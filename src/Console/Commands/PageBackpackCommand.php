@@ -21,7 +21,7 @@ class PageBackpackCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'backpack:page {name} 
+    protected $signature = 'backpack:page {name}
         {--view-path=admin : Path for the view, after resources/views/}
         {--layout= : Base layout for the page}';
 

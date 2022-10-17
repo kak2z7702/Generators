@@ -74,7 +74,7 @@ class CrudModelBackpackCommand extends GeneratorCommand
 
             $this->closeProgressBlock();
 
-            return;
+            return false;
         }
 
         // Model exists
@@ -108,7 +108,7 @@ class CrudModelBackpackCommand extends GeneratorCommand
             if (Str::contains($file, $this->crudTrait)) {
                 $this->closeProgressBlock('Already existed', 'yellow');
 
-                return;
+                return false;
             }
 
             // if it does not have CrudTrait, add the trait on the Model
@@ -135,7 +135,7 @@ class CrudModelBackpackCommand extends GeneratorCommand
                     // let the user know what we've done
                     $this->closeProgressBlock();
 
-                    return;
+                    return false;
                 }
             }
 
@@ -184,17 +184,5 @@ class CrudModelBackpackCommand extends GeneratorCommand
         $stub = $this->files->get($this->getStub());
 
         return $this->replaceNamespace($stub, $name)->replaceTable($stub, $name)->replaceClass($stub, $name);
-    }
-
-    /**
-     * Get the console command options.
-     *
-     * @return array
-     */
-    protected function getOptions()
-    {
-        return [
-
-        ];
     }
 }

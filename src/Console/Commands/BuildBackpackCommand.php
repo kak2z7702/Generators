@@ -38,7 +38,7 @@ class BuildBackpackCommand extends Command
         if (! count($models)) {
             $this->errorBlock('No models found.');
 
-            return;
+            return false;
         }
 
         foreach ($models as $key => $model) {
