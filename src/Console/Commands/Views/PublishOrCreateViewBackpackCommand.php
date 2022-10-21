@@ -54,7 +54,7 @@ abstract class PublishOrCreateViewBackpackCommand extends GeneratorCommand
 
             // full or relative file path may be provided
             if (file_exists($from)) {
-                $source = Str::start($from, Str::finish(base_path(), '\\'));
+                $source = realpath($from);
             }
 
             if (! $source) {
