@@ -56,6 +56,10 @@ abstract class PublishOrCreateViewBackpackCommand extends GeneratorCommand
             if (file_exists($from)) {
                 $source = realpath($from);
             }
+            // remove the first slash to make absolute paths relative in unix systems
+            else if (file_exists(substr($from, 1))) {
+                $source = realpath(substr($from, 1));
+            }
 
             if (! $source) {
                 $this->errorProgressBlock();
