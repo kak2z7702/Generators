@@ -45,4 +45,15 @@ class WidgetBackpackCommand extends PublishOrCreateViewBackpackCommand
      * @var string
      */
     protected $stub = 'widget.stub';
+
+    /**
+     * Get the destination class path.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    protected function getPath($name)
+    {
+        return resource_path("views/vendor/backpack/base/{$this->viewNamespace}/$name.blade.php");
+    }
 }
