@@ -22,7 +22,8 @@ class PageControllerBackpackCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'backpack:page-controller {name} {--view-path=}';
+    protected $signature = 'backpack:page-controller {name}
+        {--view-path=admin : Path of the view, after resources/views/}';
 
     /**
      * The console command description.
@@ -158,8 +159,8 @@ class PageControllerBackpackCommand extends GeneratorCommand
     {
         $name = $this->getNameInput();
 
-        $stub = str_replace('DummyName', $name, $stub);
-        $stub = str_replace('dummyName', lcfirst($name), $stub);
+        $stub = str_replace('DummyName', $name->value, $stub);
+        $stub = str_replace('dummyName', lcfirst($name->value), $stub);
         $stub = str_replace('Dummy Name', $name->kebab()->replace('-', ' ')->title(), $stub);
 
         return $this;
