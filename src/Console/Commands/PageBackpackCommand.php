@@ -23,7 +23,8 @@ class PageBackpackCommand extends GeneratorCommand
      */
     protected $signature = 'backpack:page {name}
         {--view-path=admin : Path for the view, after resources/views/}
-        {--layout= : Base layout for the page}';
+        {--route= : Path for the route, after admin/}
+        {--layout=blank : Base layout for the page}';
 
     /**
      * The console command description.
@@ -53,16 +54,20 @@ class PageBackpackCommand extends GeneratorCommand
             ->replace('.', '/')
             ->start('/')
             ->prepend($this->option('view-path'))
+            ->replace('\\', '/')
             ->replace('//', '/')
             ->trim('/');
 
-        $name = $input->afterLast('/')->replace('-', '_')->snake();
-        $path = $input->beforeLast('/');
-        $filePath = "$path/$name";
-        $fullpath = $this->getPath($filePath);
-        $layout = $this->option('layout');
+        $name = $input->afterLast('/');
+        $nameSnake = $name->snake();
+        $nameTitle = $nameSnake->replace('_', ' ')->replace('-', ' ')->title();
+        $path = $input->beforeLast($name)->trim('/\\');
+        $filePath = Str::of("$path/$name")->trim('/\\');
+        $fullPath = $this->getPath($filePath);
+        $layout = Str::of($this->option('layout'))->replace('\\', '/')->replace('/', '.');
+        $route = Str::of($this->option('route') ?? $nameSnake)->replace('\\', '/')->trim('/');
 
-        $this->infoBlock("Creating {$name->replace('_', ' ')->title()} page");
+        $this->infoBlock("Creating {$nameTitle} page");
 
         $this->progressBlock("Creating view <fg=blue>resources/views/${filePath}.blade.php</>");
 
@@ -73,40 +78,37 @@ class PageBackpackCommand extends GeneratorCommand
             return false;
         }
 
-        $this->makeDirectory($fullpath);
+        $this->makeDirectory($fullPath);
 
         // create page view
         $stub = $this->buildClass($filePath);
         $stub = str_replace('layout', $layout, $stub);
-        $stub = str_replace('Dummy Name', $name->replace('_', ' ')->title(), $stub);
-        $this->files->put($fullpath, $stub);
+        $stub = str_replace('Dummy Name', $nameTitle, $stub);
+        $this->files->put($fullPath, $stub);
 
         $this->closeProgressBlock();
 
-        // Clean up name
-        $name = $name->replace('_', ' ')->replace('-', ' ')->title();
-
         // create controller
         $this->call('backpack:page-controller', [
-            'name' => $name,
+            'name' => $nameTitle,
             '--view-path' => $path,
         ]);
 
         // create route
         $this->call('backpack:add-custom-route', [
-            'code' => "Route::get('{$name->kebab()}', '{$name->studly()}Controller@index')->name('page.{$name->kebab()}.index');",
+            'code' => "Route::get('{$route}', '{$nameTitle->studly()}Controller@index')->name('page.{$nameSnake}.index');",
         ]);
 
         // create the sidebar item
         $this->call('backpack:add-sidebar-content', [
-            'code' => "<li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ backpack_url('{$name->kebab()}') }}\"><i class=\"nav-icon la la-question\"></i> {$name}</a></li>",
+            'code' => "<li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ backpack_url('{$route}') }}\"><i class=\"nav-icon la la-question\"></i> {$nameTitle}</a></li>",
         ]);
 
-        $url = Str::of(config('app.url'))->finish('/')->append("admin/{$name->kebab()}");
+        $url = backpack_url($route);
 
         $this->newLine();
-        $this->note("Page {$name} created.");
-        $this->note("Go to <fg=blue>$url</> to access your new page.");
+        $this->note("Page {$nameTitle} created.");
+        $this->note("Go to <fg=blue>{$url}</> to access your new page.");
         $this->newLine();
     }
 
