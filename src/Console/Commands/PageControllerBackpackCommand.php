@@ -159,8 +159,8 @@ class PageControllerBackpackCommand extends GeneratorCommand
     {
         $name = $this->getNameInput();
 
-        $stub = str_replace('DummyName', $name->toString(), $stub);
-        $stub = str_replace('dummyName', lcfirst($name->toString()), $stub);
+        $stub = str_replace('DummyName', (string) $name, $stub);
+        $stub = str_replace('dummyName', lcfirst((string) $name), $stub);
         $stub = str_replace('Dummy Name', $name->kebab()->replace('-', ' ')->title(), $stub);
 
         return $this;
