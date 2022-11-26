@@ -136,6 +136,6 @@ abstract class PublishOrCreateViewBackpackCommand extends GeneratorCommand
             $name = $from->afterLast('/')->afterLast('\\');
         }
 
-        return $name->trim()->snake('_')->value;
+        return (string) $name->trim()->snake('_');
     }
 }
