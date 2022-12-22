@@ -34,7 +34,7 @@ class CrudBackpackCommand extends BackpackCommand
         $name = $this->getNameInput();
         $nameTitle = $this->buildCamelName($name);
         $nameKebab = $this->buildKebabName($nameTitle);
-        $namePlural = $this->buildPluralName($nameTitle);
+        $fullNameWithSpaces = $this->buildNameWithSpaces($nameTitle);
 
         // Validate if the name is reserved
         if ($this->isReservedName($nameTitle)) {
@@ -52,14 +52,14 @@ class CrudBackpackCommand extends BackpackCommand
         }
 
         // Create the CRUD Model and show output
-        $this->call('backpack:crud-model', ['name' => $nameTitle]);
+        $this->call('backpack:crud-model', ['name' => $name]);
 
         // Create the CRUD Controller and show output
-        $this->call('backpack:crud-controller', ['name' => $nameTitle, '--validation' => $validation]);
+        $this->call('backpack:crud-controller', ['name' => $name, '--validation' => $validation]);
 
         // Create the CRUD Request and show output
         if ($validation === 'request') {
-            $this->call('backpack:crud-request', ['name' => $nameTitle]);
+            $this->call('backpack:crud-request', ['name' => $name]);
         }
 
         // Create the CRUD route
@@ -69,7 +69,7 @@ class CrudBackpackCommand extends BackpackCommand
 
         // Create the sidebar item
         $this->call('backpack:add-sidebar-content', [
-            'code' => "<li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ backpack_url('$nameKebab') }}\"><i class=\"nav-icon la la-question\"></i> $namePlural</a></li>",
+            'code' => "<li class=\"nav-item\"><a class=\"nav-link\" href=\"{{ backpack_url('$nameKebab') }}\"><i class=\"nav-icon la la-question\"></i> $fullNameWithSpaces</a></li>",
         ]);
 
         // if the application uses cached routes, we should rebuild the cache so the previous added route will

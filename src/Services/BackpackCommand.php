@@ -43,6 +43,27 @@ abstract class BackpackCommand extends GeneratorCommand
         return Str::plural(str_replace('-', ' ', Arr::last(explode('/', $nameKebab))));
     }
 
+    public function buildNameWithSpaces(string $nameTitle): string
+    {
+        $words = preg_split('/(?=[A-Z])/', str_replace('/', '', $nameTitle));
+
+        // Transform last word into plural
+        $lastWord = Arr::last($words);
+        array_pop($words);
+        $words[] = Str::plural($lastWord);
+
+        $name = [];
+
+        foreach ($words as $word) {
+            if ($word === '') {
+                continue;
+            }
+            $name[] = count($name) === 0 ? ucfirst($word) : strtolower($word);
+        }
+
+        return implode(' ', $name);
+    }
+
     public function buildSingularName(string $nameKebab)
     {
         return str_replace('-', ' ', Arr::last(explode('/', $nameKebab)));

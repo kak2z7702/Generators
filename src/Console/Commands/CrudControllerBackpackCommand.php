@@ -49,8 +49,9 @@ class CrudControllerBackpackCommand extends BackpackCommand
     public function handle()
     {
         $name = $this->getNameInput();
-        $qualifyClassName = $this->qualifyClass($name);
-        $path = $this->getPath($qualifyClassName);
+        $nameTitle = $this->buildCamelName($name);
+        $qualifiedClassName = $this->qualifyClass($nameTitle);
+        $path = $this->getPath($qualifiedClassName);
         $relativePath = Str::of($path)->after(base_path())->trim('\\/');
 
         $this->progressBlock("Creating Controller <fg=blue>$relativePath</>");
@@ -69,7 +70,7 @@ class CrudControllerBackpackCommand extends BackpackCommand
         // stub files so that it gets the correctly formatted namespace and class name.
         $this->makeDirectory($path);
 
-        $this->files->put($path, $this->sortImports($this->buildClass($name)));
+        $this->files->put($path, $this->sortImports($this->buildClass($nameTitle)));
 
         $this->closeProgressBlock();
     }
