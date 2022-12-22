@@ -2,10 +2,10 @@
 
 namespace Backpack\Generators\Console\Commands;
 
-use Illuminate\Console\GeneratorCommand;
+use Backpack\Generators\Services\BackpackCommand;
 use Illuminate\Support\Str;
 
-class CrudBackpackCommand extends GeneratorCommand
+class CrudBackpackCommand extends BackpackCommand
 {
     use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
 
@@ -32,9 +32,9 @@ class CrudBackpackCommand extends GeneratorCommand
     public function handle()
     {
         $name = $this->getNameInput();
-        $nameTitle = ucfirst(Str::camel($name));
-        $nameKebab = Str::kebab($nameTitle);
-        $namePlural = ucfirst(str_replace('-', ' ', Str::plural($nameKebab)));
+        $nameTitle = $this->buildCamelName($name);
+        $nameKebab = $this->buildKebabName($nameTitle);
+        $namePlural = $this->buildPluralName($nameTitle);
 
         // Validate if the name is reserved
         if ($this->isReservedName($nameTitle)) {
@@ -64,7 +64,7 @@ class CrudBackpackCommand extends GeneratorCommand
 
         // Create the CRUD route
         $this->call('backpack:add-custom-route', [
-            'code' => "Route::crud('$nameKebab', '{$nameTitle}CrudController');",
+            'code' => "Route::crud('$nameKebab', '{$this->convertSlashesForNamespace($nameTitle)}CrudController');",
         ]);
 
         // Create the sidebar item

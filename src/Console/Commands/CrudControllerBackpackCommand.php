@@ -2,10 +2,11 @@
 
 namespace Backpack\Generators\Console\Commands;
 
+use Backpack\Generators\Services\BackpackCommand;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Str;
 
-class CrudControllerBackpackCommand extends GeneratorCommand
+class CrudControllerBackpackCommand extends BackpackCommand
 {
     use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
 
@@ -47,8 +48,9 @@ class CrudControllerBackpackCommand extends GeneratorCommand
      */
     public function handle()
     {
-        $name = $this->qualifyClass($this->getNameInput());
-        $path = $this->getPath($name);
+        $name = $this->getNameInput();
+        $qualifyClassName = $this->qualifyClass($name);
+        $path = $this->getPath($qualifyClassName);
         $relativePath = Str::of($path)->after(base_path())->trim('\\/');
 
         $this->progressBlock("Creating Controller <fg=blue>$relativePath</>");
@@ -116,11 +118,12 @@ class CrudControllerBackpackCommand extends GeneratorCommand
     protected function replaceNameStrings(&$stub, $name)
     {
         $nameTitle = Str::afterLast($name, '\\');
-        $nameKebab = Str::kebab($nameTitle);
-        $nameSingular = str_replace('-', ' ', $nameKebab);
-        $namePlural = Str::plural($nameSingular);
+        $nameKebab = $this->buildKebabName($name);
+        $nameSingular = $this->buildSingularName($nameKebab);
+        $namePlural = $this->buildPluralName($nameSingular);
 
-        $stub = str_replace('DummyClass', $nameTitle, $stub);
+        $stub = str_replace('DummyModelClass', $this->convertSlashesForNamespace($nameTitle), $stub);
+        $stub = str_replace('DummyClass', $this->buildClassName($nameTitle), $stub);
         $stub = str_replace('dummy-class', $nameKebab, $stub);
         $stub = str_replace('dummy singular', $nameSingular, $stub);
         $stub = str_replace('dummy plural', $namePlural, $stub);
@@ -196,7 +199,7 @@ class CrudControllerBackpackCommand extends GeneratorCommand
     protected function replaceModel(&$stub, $name)
     {
         $class = str_replace($this->getNamespace($name).'\\', '', $name);
-        $stub = str_replace(['DummyClass', '{{ class }}', '{{class}}'], $class, $stub);
+        $stub = str_replace(['DummyClass', '{{ class }}', '{{class}}'], $this->buildClassName($name), $stub);
 
         return $this;
     }
@@ -235,11 +238,11 @@ class CrudControllerBackpackCommand extends GeneratorCommand
     {
         $stub = $this->files->get($this->getStub());
 
-        $this->replaceNamespace($stub, $name)
+        $this->replaceNamespace($stub, $this->qualifyClass($name))
             ->replaceRequest($stub)
-            ->replaceNameStrings($stub, $name)
-            ->replaceModel($stub, $name)
-            ->replaceSetFromDb($stub, $name);
+            ->replaceNameStrings($stub, $this->buildCamelName($name))
+            ->replaceModel($stub, $this->buildCamelName($name))
+            ->replaceSetFromDb($stub, $this->buildCamelName($name));
 
         return $stub;
     }
