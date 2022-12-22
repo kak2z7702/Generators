@@ -5,7 +5,6 @@ namespace Backpack\Generators\Services;
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use function Illuminate\Console;
 
 abstract class BackpackCommand extends GeneratorCommand
 {
