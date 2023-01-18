@@ -6,7 +6,7 @@ use Illuminate\Console\GeneratorCommand;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-abstract class BackpackCommand extends GeneratorCommand
+class BackpackCommand extends GeneratorCommand
 {
     private const STR_CAMEL = 'camel';
 
