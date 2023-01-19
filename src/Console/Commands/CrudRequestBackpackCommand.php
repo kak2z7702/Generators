@@ -2,10 +2,10 @@
 
 namespace Backpack\Generators\Console\Commands;
 
-use Illuminate\Console\GeneratorCommand;
+use Backpack\Generators\Services\BackpackCommand;
 use Illuminate\Support\Str;
 
-class CrudRequestBackpackCommand extends GeneratorCommand
+class CrudRequestBackpackCommand extends BackpackCommand
 {
     use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
 
@@ -46,8 +46,10 @@ class CrudRequestBackpackCommand extends GeneratorCommand
      */
     public function handle()
     {
-        $name = $this->qualifyClass($this->getNameInput());
-        $path = $this->getPath($name);
+        $name = $this->getNameInput();
+        $nameTitle = $this->buildCamelName($name);
+        $qualifiedClassName = $this->qualifyClass($nameTitle);
+        $path = $this->getPath($qualifiedClassName);
         $relativePath = Str::of($path)->after(base_path())->trim('\\/');
 
         $this->progressBlock("Creating Request <fg=blue>$relativePath</>");
@@ -66,7 +68,7 @@ class CrudRequestBackpackCommand extends GeneratorCommand
         // stub files so that it gets the correctly formatted namespace and class name.
         $this->makeDirectory($path);
 
-        $this->files->put($path, $this->sortImports($this->buildClass($name)));
+        $this->files->put($path, $this->sortImports($this->buildClass($qualifiedClassName)));
 
         $this->closeProgressBlock();
     }

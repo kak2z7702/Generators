@@ -2,10 +2,10 @@
 
 namespace Backpack\Generators\Console\Commands;
 
-use Illuminate\Console\GeneratorCommand;
+use Backpack\Generators\Services\BackpackCommand;
 use Illuminate\Support\Str;
 
-class CrudModelBackpackCommand extends GeneratorCommand
+class CrudModelBackpackCommand extends BackpackCommand
 {
     use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
 
@@ -54,9 +54,10 @@ class CrudModelBackpackCommand extends GeneratorCommand
     public function handle()
     {
         $name = $this->getNameInput();
-        $namespaceApp = $this->qualifyClass($this->getNameInput());
-        $namespaceModels = $this->qualifyClass('/Models/'.$this->getNameInput());
-        $relativePath = lcfirst(Str::of("$namespaceModels.php")->replace('\\', '/'));
+        $nameTitle = $this->buildCamelName($name);
+        $namespaceApp = $this->qualifyClass($nameTitle);
+        $namespaceModels = $this->qualifyClass('/Models/'.$nameTitle);
+        $relativePath = $this->buildRelativePath($namespaceModels);
 
         $this->progressBlock("Creating Model <fg=blue>$relativePath</>");
 
@@ -68,9 +69,9 @@ class CrudModelBackpackCommand extends GeneratorCommand
         // should be written. Then, we will build the class and make the proper replacements on
         // the stub files so that it gets the correctly formatted namespace and class name.
         if (! $existsOnApp && ! $existsOnModels) {
-            $this->makeDirectory($namespaceModels);
+            $this->makeDirectory($this->getPath($namespaceModels));
 
-            $this->files->put($this->getPath($namespaceModels), $this->sortImports($this->buildClass($namespaceModels)));
+            $this->files->put($this->getPath($namespaceModels), $this->sortImports($this->buildClass($nameTitle)));
 
             $this->closeProgressBlock();
 
@@ -113,7 +114,7 @@ class CrudModelBackpackCommand extends GeneratorCommand
 
             // if it does not have CrudTrait, add the trait on the Model
             foreach ($lines as $key => $line) {
-                if (Str::contains($line, "class {$this->getNameInput()} extends")) {
+                if (Str::contains($line, "class {$name} extends")) {
                     if (Str::endsWith($line, '{')) {
                         // add the trait on the next
                         $position = $key + 1;
@@ -164,7 +165,8 @@ class CrudModelBackpackCommand extends GeneratorCommand
      */
     protected function replaceTable(&$stub, $name)
     {
-        $name = ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', str_replace($this->getNamespace($name).'\\', '', $name))), '_');
+        $name = str_replace('/', '', $this->buildCamelName($name));
+        $name = ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', $name)), '_');
 
         $table = Str::snake(Str::plural($name));
 
@@ -183,6 +185,6 @@ class CrudModelBackpackCommand extends GeneratorCommand
     {
         $stub = $this->files->get($this->getStub());
 
-        return $this->replaceNamespace($stub, $name)->replaceTable($stub, $name)->replaceClass($stub, $name);
+        return $this->replaceNamespace($stub, $this->qualifyClass('/Models/'.$name))->replaceTable($stub, $name)->replaceClass($stub, $this->buildClassName($name));
     }
 }
