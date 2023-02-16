@@ -25,6 +25,7 @@
         }
     ],
     "require": {
+        "php": "^7.4|^8.0",
         "backpack/crud": "^5.3.11"
     },
     "require-dev": {
