@@ -70,7 +70,7 @@ class PageBackpackCommand extends GeneratorCommand
 
         $this->infoBlock("Creating {$nameTitle} page");
 
-        $this->progressBlock("Creating view <fg=blue>resources/views/${filePath}.blade.php</>");
+        $this->progressBlock("Creating view <fg=blue>resources/views/{$filePath}.blade.php</>");
 
         // check if the file already exists
         if ((! $this->hasOption('force') || ! $this->option('force')) && $this->alreadyExists($filePath)) {
