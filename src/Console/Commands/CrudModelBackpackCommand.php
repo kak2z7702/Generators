@@ -106,19 +106,22 @@ class CrudModelBackpackCommand extends BackpackCommand
 
             // check if it already uses CrudTrait
             // if it does, do nothing
-            if (Str::contains($content, $this->crudTrait)) {
+            if ($content->contains($this->crudTrait)) {
                 $this->closeProgressBlock('Already existed', 'yellow');
 
                 return false;
             } else {
-                $modifiedContent = Str::of(Str::before($content, ';'))
+                $modifiedContent = Str::of($content->before(';'))
                                         ->append(';'.PHP_EOL.PHP_EOL.'use Backpack\CRUD\app\Models\Traits\CrudTrait;');
 
                 $content = $content->after(';');
 
-                $hasNewLine = str_starts_with($content, '\n') ? 1 : 0;
+                $hasNewLine = str_starts_with($content, '\n\n') ? 1 : 0;
 
                 $modifiedContent = $modifiedContent->append(substr($content, strpos($content, "\n") + $hasNewLine));
+
+                // use the CrudTrait on the class
+                $modifiedContent = $modifiedContent->replaceFirst('{', '{'.PHP_EOL.'    use CrudTrait;');
 
                 // save the file
                 $this->files->put($path, $modifiedContent);
