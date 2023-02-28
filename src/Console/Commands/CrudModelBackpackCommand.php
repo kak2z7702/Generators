@@ -115,11 +115,13 @@ class CrudModelBackpackCommand extends BackpackCommand
                                         ->append(';'.PHP_EOL.PHP_EOL.'use Backpack\CRUD\app\Models\Traits\CrudTrait;');
 
                 $content = $content->after(';');
-
-                $hasNewLine = str_starts_with($content, '\n\n') ? 1 : 0;
-
-                $modifiedContent = $modifiedContent->append(substr($content, strpos($content, "\n") + $hasNewLine));
-
+               
+                while(str_starts_with($content, PHP_EOL) || str_starts_with($content, "\n")) {
+                    $content = substr($content, 1);
+                }
+            
+                $modifiedContent = $modifiedContent->append(PHP_EOL.$content);
+                
                 // use the CrudTrait on the class
                 $modifiedContent = $modifiedContent->replaceFirst('{', '{'.PHP_EOL.'    use CrudTrait;');
 
