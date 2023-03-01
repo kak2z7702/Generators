@@ -3,6 +3,7 @@
 namespace Backpack\Generators\Console\Commands;
 
 use Backpack\Generators\Services\BackpackCommand;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class CrudModelBackpackCommand extends BackpackCommand
@@ -101,45 +102,37 @@ class CrudModelBackpackCommand extends BackpackCommand
         if (! $this->hasOption('force') || ! $this->option('force')) {
             $this->progressBlock('Adding CrudTrait to the Model');
 
-            $file = $this->files->get($path);
-            $lines = preg_split('/(\r\n)|\r|\n/', $file);
+            $content = Str::of($this->files->get($path));
 
             // check if it already uses CrudTrait
             // if it does, do nothing
-            if (Str::contains($file, $this->crudTrait)) {
+            if ($content->contains($this->crudTrait)) {
                 $this->closeProgressBlock('Already existed', 'yellow');
 
                 return false;
-            }
+            } else {
+                $modifiedContent = Str::of($content->before('namespace'))
+                                    ->append('namespace'.$content->after('namespace')->before(';'))
+                                    ->append(';'.PHP_EOL.PHP_EOL.'use Backpack\CRUD\app\Models\Traits\CrudTrait;');
 
-            // if it does not have CrudTrait, add the trait on the Model
-            foreach ($lines as $key => $line) {
-                if (Str::contains($line, "class {$name} extends")) {
-                    if (Str::endsWith($line, '{')) {
-                        // add the trait on the next
-                        $position = $key + 1;
-                    } elseif ($lines[$key + 1] == '{') {
-                        // add the trait on the next next line
-                        $position = $key + 2;
-                    }
-
-                    // keep in mind that the line number shown in IDEs is not
-                    // the same as the array index - arrays start counting from 0,
-                    // IDEs start counting from 1
-
-                    // add CrudTrait
-                    array_splice($lines, $position, 0, "    use \\{$this->crudTrait};");
-
-                    // save the file
-                    $this->files->put($path, implode(PHP_EOL, $lines));
-
-                    // let the user know what we've done
-                    $this->closeProgressBlock();
-
-                    return false;
+                $content = $content->after('namespace')->after(';');
+               
+                while(str_starts_with($content, PHP_EOL) || str_starts_with($content, "\n")) {
+                    $content = substr($content, 1);
                 }
-            }
+            
+                $modifiedContent = $modifiedContent->append(PHP_EOL.$content);
+                
+                // use the CrudTrait on the class
+                $modifiedContent = $modifiedContent->replaceFirst('{', '{'.PHP_EOL.'    use CrudTrait;');
 
+                // save the file
+                $this->files->put($path, $modifiedContent);
+                // let the user know what we've done
+                $this->closeProgressBlock();
+
+                return true;
+            }
             // In case we couldn't add the CrudTrait
             $this->errorProgressBlock();
             $this->note("Model already existed on '$name' and we couldn't add CrudTrait. Please add it manually.", 'red');
