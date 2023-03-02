@@ -68,7 +68,7 @@ class BuildBackpackCommand extends Command
             }
 
             // Try to load it by path as namespace
-            $class = (string)Str::of($filepath)
+            $class = (string) Str::of($filepath)
                 ->after(base_path())
                 ->trim('\\/')
                 ->replace('/', '\\')
