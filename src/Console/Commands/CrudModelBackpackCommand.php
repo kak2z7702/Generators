@@ -111,10 +111,11 @@ class CrudModelBackpackCommand extends BackpackCommand
 
                 return false;
             } else {
-                $modifiedContent = Str::of($content->before(';'))
-                                        ->append(';'.PHP_EOL.PHP_EOL.'use Backpack\CRUD\app\Models\Traits\CrudTrait;');
+                $modifiedContent = Str::of($content->before('namespace'))
+                                    ->append('namespace'.$content->after('namespace')->before(';'))
+                                    ->append(';'.PHP_EOL.PHP_EOL.'use Backpack\CRUD\app\Models\Traits\CrudTrait;');
 
-                $content = $content->after(';');
+                $content = $content->after('namespace')->after(';');
 
                 while (str_starts_with($content, PHP_EOL) || str_starts_with($content, "\n")) {
                     $content = substr($content, 1);
